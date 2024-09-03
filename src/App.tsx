@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Sidebar } from "./components/Sidebar";
 import { ChatContainer } from "./components/Chat";
 import SettingsSidebar from "./components/SettingsSidebar";
-import { generateChat, ChatRequest, ChatMessage } from "./services/api";
+import { generateChat } from "./services/api";
+import { ChatMessage, ChatRequest } from "./types/api.types";
 
 const DEFAULT_MODEL = "phi3";
 const DEFAULT_API_URL = "http://localhost:11434/api";

@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { ArrowLineRight } from "@phosphor-icons/react";
 import { listLocalModels } from "../services/api";
+import Select from "./common/Select";
+import Input from "./common/Input";
+import Toggle from "./common/Toggle";
 
 interface SettingsSidebarProps {
   onClose: () => void;
@@ -7,6 +11,8 @@ interface SettingsSidebarProps {
   setModel: React.Dispatch<React.SetStateAction<string>>;
   apiUrl: string;
   setApiUrl: React.Dispatch<React.SetStateAction<string>>;
+  debugMode: boolean;
+  setDebugMode: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
@@ -15,6 +21,8 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
   setModel,
   apiUrl,
   setApiUrl,
+  debugMode,
+  setDebugMode,
 }) => {
   const [models, setModels] = useState<
     { name: string; modified_at: string; size: number }[]
@@ -38,17 +46,14 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
   }, []);
 
   return (
-    <div className="w-64 h-full p-4 border-l border-gray-200 bg-white">
-      <button
-        className="absolute top-4 right-4 text-gray-600"
-        onClick={onClose}
-      >
-        &times;
-      </button>
+    <div className="w-64 h-full p-4 bg-white border-l border-neutral-200">
+      <div className="flex justify-between items-center border-b border-neutral-100 pb-4 mb-8">
+        <h2 className="text-lg font-semibold">Settings</h2>
 
-      <h2 className="text-lg font-semibold mb-8 border-b border-gray-200 pb-4">
-        Settings
-      </h2>
+        <button className="text-neutral-600" onClick={onClose}>
+          <ArrowLineRight size={24} />
+        </button>
+      </div>
 
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2">Select Model</label>
@@ -57,28 +62,30 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
-          <select
-            className="w-full border rounded-lg p-2"
+          <Select
             value={model}
-            onChange={(e) => setModel(e.target.value)}
-          >
-            <option value="">Select a model</option>
-            {models.map((m) => (
-              <option key={m.name} value={m.name}>
-                {m.name}
-              </option>
-            ))}
-          </select>
+            options={models.map((m) => m.name)}
+            onChange={(value) => setModel(value)}
+            placeholder="Select a model"
+            optionRenderer={(name) => name}
+          />
         )}
       </div>
 
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2">API URL</label>
-        <input
-          type="text"
-          className="w-full border rounded-lg p-2"
+        <Input
           value={apiUrl}
-          onChange={(e) => setApiUrl(e.target.value)}
+          onChange={(value) => setApiUrl(value)}
+          placeholder="Enter API URL"
+        />
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-2">Debug Mode</label>
+        <Toggle
+          initialValue={debugMode}
+          onChange={() => setDebugMode((prev) => !prev)}
         />
       </div>
     </div>

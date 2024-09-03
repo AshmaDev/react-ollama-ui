@@ -7,10 +7,10 @@ const Message = ({ text, isUser }: MessageProps) => {
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
       <div
-        className={`p-3 rounded-lg ${
+        className={`p-3 rounded-xl ${
           isUser
-            ? "bg-blue-500 text-white max-w-lg"
-            : "bg-gray-300 text-black max-w-2xl"
+            ? "bg-neutral-100 text-neutral-800 max-w-lg"
+            : "bg-white text-neutral-800 max-w-2xl"
         }`}
       >
         {text}

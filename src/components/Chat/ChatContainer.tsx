@@ -1,17 +1,21 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Message from "./Message";
 
-const ChatContainer = () => {
-  const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>(
-    []
-  );
+interface ChatContainerProps {
+  messages: { role: string; content: string }[];
+  onSendMessage: (message: string) => void;
+}
+
+const ChatContainer: React.FC<ChatContainerProps> = ({
+  messages,
+  onSendMessage,
+}) => {
   const [input, setInput] = useState("");
 
   const handleSend = () => {
     if (input.trim()) {
-      setMessages([...messages, { text: input, isUser: true }]);
+      onSendMessage(input.trim());
       setInput("");
-      // Here, you would typically trigger the bot's response as well
     }
   };
 
@@ -20,7 +24,11 @@ const ChatContainer = () => {
       {/* Messages Box */}
       <div className="flex-1 overflow-y-auto mb-4 space-y-4">
         {messages.map((message, index) => (
-          <Message key={index} text={message.text} isUser={message.isUser} />
+          <Message
+            key={index}
+            text={message.content}
+            isUser={message.role === "user"}
+          />
         ))}
       </div>
 

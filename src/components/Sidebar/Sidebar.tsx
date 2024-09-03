@@ -1,7 +1,11 @@
 import SidebarButton from "./SidebarButton";
 import ChatList from "./ChatList";
 
-const Sidebar = () => {
+interface SidebarProps {
+  onSettingsClick: () => void;
+}
+
+const Sidebar = ({ onSettingsClick }: SidebarProps) => {
   return (
     <div className="w-64 bg-gray-800 text-white flex flex-col">
       <div className="p-4">
@@ -12,8 +16,7 @@ const Sidebar = () => {
 
       <div className="p-4">
         <div className="border-t border-gray-600 pt-2 space-y-2">
-          <SidebarButton label="Settings" />
-          <SidebarButton label="Logout" />
+          <SidebarButton label="Settings" onClick={onSettingsClick} />
         </div>
       </div>
     </div>

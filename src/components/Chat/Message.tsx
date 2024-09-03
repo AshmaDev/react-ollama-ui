@@ -9,12 +9,17 @@ interface MessageProps {
 
 const Message = ({ text, isUser }: MessageProps) => {
   return (
-    <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
+    <div
+      className={`relative flex ${isUser ? "justify-end" : "justify-start"}`}
+    >
+      {!isUser && (
+        <div className="absolute top-2 -left-5 w-6 h-6 rounded-full border bg-[url(/favicon/favicon-32x32.png)] bg-cover" />
+      )}
       <div
-        className={`p-3 rounded-xl ${
+        className={`px-4 py-2 rounded-xl ${
           isUser
             ? "bg-neutral-100 text-neutral-800 max-w-lg"
-            : "bg-white text-neutral-800 max-w-2xl"
+            : "text-neutral-800 max-w-2xl"
         }`}
       >
         <ReactMarkdown

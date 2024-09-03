@@ -52,6 +52,7 @@ const Toggle = ({
           checked={isChecked}
           onChange={handleToggleChange}
         />
+
         <div
           className={cn(
             "rounded-full flex items-center cursor-pointer transition-colors duration-300 border",

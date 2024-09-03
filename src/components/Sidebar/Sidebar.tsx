@@ -1,4 +1,4 @@
-import { Gear, Plus, Sliders } from "@phosphor-icons/react";
+import { Plus, Sliders } from "@phosphor-icons/react";
 import Button from "../common/Button";
 import ChatList from "./ChatList";
 

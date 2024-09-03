@@ -10,7 +10,7 @@ interface ChatContainerProps {
 const ChatContainer = ({ messages, onSendMessage }: ChatContainerProps) => {
   return (
     <div className="flex-1 flex flex-col bg-white">
-      <ChatHeader title="Chat 1" />
+      <ChatHeader title="New Chat" />
       <MessageList messages={messages} />
       <MessageForm onSendMessage={onSendMessage} />
     </div>

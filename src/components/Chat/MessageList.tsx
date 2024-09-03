@@ -7,7 +7,7 @@ interface MessageListProps {
 const MessageList = ({ messages }: MessageListProps) => {
   return (
     <div className="flex-1 overflow-y-auto p-4">
-      <div className="space-y-4 rounded-xl bg-neutral-50 p-4">
+      <div className="space-y-4 rounded-xl bg-white p-4">
         {messages.map((message, index) => (
           <Message
             key={index}

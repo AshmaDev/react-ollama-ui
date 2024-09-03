@@ -1,36 +1,11 @@
-const baseUrl = "http://localhost:11434/api"; // Replace with your actual base URL
+import {
+  ChatPartResponse,
+  ChatRequest,
+  ChatResponse,
+  ListLocalModelsResponse,
+} from "../types/api.types";
 
-export type ChatRequest = {
-  model: string;
-  messages?: ChatMessage[];
-};
-
-export type ChatMessage = {
-  role: string;
-  content: string;
-};
-
-export type ChatCompletedResponse = {
-  model: string;
-  created_at: string;
-  message: ChatMessage;
-  done: boolean;
-  total_duration: number;
-  load_duration: number;
-  prompt_eval_count: number;
-  prompt_eval_duration: number;
-  eval_count: number;
-  eval_duration: number;
-};
-
-export type ChatPartResponse = {
-  model: string;
-  created_at: string;
-  message: ChatMessage;
-  done: boolean;
-};
-
-export type ChatResponse = ChatCompletedResponse | ChatPartResponse;
+const baseUrl = "http://localhost:11434/api";
 
 const getApiUrl = (path: string) => `${baseUrl}${path}`;
 
@@ -67,4 +42,14 @@ export const generateChat = async (
   }
 
   return results;
+};
+
+export const listLocalModels = async (): Promise<ListLocalModelsResponse> => {
+  const response = await fetch(getApiUrl("/tags"), {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return await response.json();
 };

@@ -1,13 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { listLocalModels } from "../services/api";
 
 interface SettingsSidebarProps {
   onClose: () => void;
   model: string;
-  setModel: (model: string) => void;
+  setModel: React.Dispatch<React.SetStateAction<string>>;
   apiUrl: string;
-  setApiUrl: (url: string) => void;
-  debugMode: boolean;
-  setDebugMode: (mode: boolean) => void;
+  setApiUrl: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
@@ -16,48 +15,70 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
   setModel,
   apiUrl,
   setApiUrl,
-  debugMode,
-  setDebugMode,
 }) => {
+  const [models, setModels] = useState<
+    { name: string; modified_at: string; size: number }[]
+  >([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchModels = async () => {
+      try {
+        const response = await listLocalModels();
+        setModels(response.models);
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to fetch models");
+        setLoading(false);
+      }
+    };
+
+    fetchModels();
+  }, []);
+
   return (
-    <div className="w-64 bg-gray-900 text-white flex flex-col p-4 right-0 h-full shadow-lg">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Settings</h2>
-        <button onClick={onClose} className="text-gray-400 hover:text-white">
-          Close
-        </button>
-      </div>
+    <div className="w-64 h-full p-4 border-l border-gray-200 bg-white">
+      <button
+        className="absolute top-4 right-4 text-gray-600"
+        onClick={onClose}
+      >
+        &times;
+      </button>
 
-      {/* Model Selection */}
+      <h2 className="text-lg font-semibold mb-8 border-b border-gray-200 pb-4">
+        Settings
+      </h2>
+
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-2">Model</label>
-        <input
-          type="text"
-          value={model}
-          onChange={(e) => setModel(e.target.value)}
-          className="w-full p-2 bg-gray-800 text-white rounded"
-        />
+        <label className="block text-sm font-medium mb-2">Select Model</label>
+        {loading ? (
+          <p>Loading models...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : (
+          <select
+            className="w-full border rounded-lg p-2"
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
+          >
+            <option value="">Select a model</option>
+            {models.map((m) => (
+              <option key={m.name} value={m.name}>
+                {m.name}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
-      {/* API URL */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2">API URL</label>
         <input
           type="text"
+          className="w-full border rounded-lg p-2"
           value={apiUrl}
           onChange={(e) => setApiUrl(e.target.value)}
-          className="w-full p-2 bg-gray-800 text-white rounded"
-        />
-      </div>
-
-      {/* Debug Mode Toggle */}
-      <div className="mb-4 flex items-center">
-        <label className="block text-sm font-medium mr-2">Debug Mode</label>
-        <input
-          type="checkbox"
-          checked={debugMode}
-          onChange={() => setDebugMode(!debugMode)}
-          className="w-4 h-4 bg-gray-800 text-blue-600 border-gray-600 rounded"
         />
       </div>
     </div>

@@ -58,7 +58,7 @@ const Toggle = ({
             {
               "w-12 h-6 p-1": size === "md",
               "w-20 h-10 p-1": size === "lg",
-              "bg-neutral-300 border-neutral-300": isChecked,
+              "bg-neutral-600 border-neutral-600": isChecked,
               "bg-neutral-50 border-neutral-200": !isChecked,
             }
           )}

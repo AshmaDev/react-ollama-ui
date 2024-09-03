@@ -23,7 +23,7 @@ const Input: React.FC<InputProps> = ({
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}
       className={cn(
-        "w-full rounded-xl p-2 border border-neutral-200 bg-neutral-50",
+        "w-full rounded-xl p-2 border border-neutral-200 bg-neutral-50 outline-none focus:border-neutral-300",
         className
       )}
     />

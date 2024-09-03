@@ -47,7 +47,7 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
 
   return (
     <div className="w-64 h-full p-4 bg-white border-l border-neutral-200">
-      <div className="flex justify-between items-center border-b border-neutral-100 pb-4 mb-8">
+      <div className="flex justify-between items-center border-b border-neutral-100 pb-4 mb-4">
         <h2 className="text-lg font-semibold">Settings</h2>
 
         <button className="text-neutral-600" onClick={onClose}>

@@ -17,11 +17,12 @@ const Select = ({
 }: SelectProps) => {
   return (
     <select
-      className="w-full rounded-xl p-2 border border-neutral-200 bg-neutral-50"
+      className="w-full rounded-xl p-2 border border-neutral-200 bg-neutral-50 outline-none focus:border-neutral-300"
       value={value}
       onChange={(e) => onChange(e.target.value)}
     >
-      <option value="">{placeholder}</option>
+      <option disabled>{placeholder}</option>
+
       {options.map((option, index) => (
         <option key={index} value={option}>
           {optionRenderer(option)}

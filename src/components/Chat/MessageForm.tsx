@@ -16,9 +16,9 @@ const MessageForm = ({ onSendMessage }: MessageFormProps) => {
   };
 
   return (
-    <div className="flex items-center border-t border-neutral-100 p-4 gap-2">
+    <div className="flex items-center border-t border-neutral-100 p-4 gap-3">
       <textarea
-        className="flex-1 resize-none rounded-full py-2 px-4 border border-neutral-200 bg-neutral-50"
+        className="flex-1 resize-none rounded-full py-2 px-4 border border-neutral-200 bg-neutral-50 outline-none focus:border-neutral-300"
         rows={1}
         value={input}
         onChange={(e) => setInput(e.target.value)}
@@ -30,6 +30,7 @@ const MessageForm = ({ onSendMessage }: MessageFormProps) => {
         }}
         placeholder="Type your message..."
       />
+
       <button type="button" className="text-neutral-600" onClick={handleSend}>
         <PaperPlane size={24} />
       </button>

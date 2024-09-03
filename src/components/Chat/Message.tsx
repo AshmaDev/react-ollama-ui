@@ -18,7 +18,7 @@ const Message = ({ text, isUser }: MessageProps) => {
       <div
         className={`px-4 py-2 rounded-xl ${
           isUser
-            ? "bg-neutral-100 text-neutral-800 max-w-lg"
+            ? "bg-neutral-50 text-neutral-800 max-w-lg"
             : "text-neutral-800 max-w-2xl"
         }`}
       >

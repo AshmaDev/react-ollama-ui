@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import Message from "./Message";
 
 interface MessageListProps {
@@ -5,6 +6,18 @@ interface MessageListProps {
 }
 
 const MessageList = ({ messages }: MessageListProps) => {
+  const messageEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    if (messageEndRef.current) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   return (
     <div className="flex-1 overflow-y-auto p-4">
       <div className="space-y-4 rounded-xl bg-white p-4">
@@ -15,6 +28,8 @@ const MessageList = ({ messages }: MessageListProps) => {
             isUser={message.role === "user"}
           />
         ))}
+
+        <div ref={messageEndRef} />
       </div>
     </div>
   );

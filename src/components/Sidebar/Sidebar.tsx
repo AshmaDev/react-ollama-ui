@@ -7,10 +7,14 @@ const Sidebar = () => {
       <div className="p-4">
         <SidebarButton label="New Chat" />
       </div>
+
       <ChatList />
-      <div className="p-4 space-y-2">
-        <SidebarButton label="Settings" />
-        <SidebarButton label="Logout" />
+
+      <div className="p-4">
+        <div className="border-t border-gray-600 pt-2 space-y-2">
+          <SidebarButton label="Settings" />
+          <SidebarButton label="Logout" />
+        </div>
       </div>
     </div>
   );

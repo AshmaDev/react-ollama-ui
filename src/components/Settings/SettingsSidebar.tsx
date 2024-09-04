@@ -1,5 +1,5 @@
 import { ArrowLineRight } from "@phosphor-icons/react";
-import { useSettings } from "../../contexts/SettingsContext";
+import { useSettings } from "@/contexts/SettingsContext";
 import Input from "../common/Input";
 import Toggle from "../common/Toggle";
 import ModelSelector from "./ModelSelector";

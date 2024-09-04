@@ -1,4 +1,4 @@
-import { ChatMessage } from "../types/api.types";
+import { ChatMessage } from "@/types/api.types";
 import { CHATS_STORE_NAME, initDB } from "./db";
 
 export const saveChat = async (

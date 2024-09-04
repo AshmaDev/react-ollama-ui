@@ -13,9 +13,9 @@ import {
   updateChatTitle,
   deleteChat,
   saveChat,
-} from "../services/chat";
-import { generateChat } from "../services/api";
-import { ChatMessage, ChatRequest } from "../types/api.types";
+} from "@/services/chat";
+import { generateChat } from "@/services/api";
+import { ChatMessage, ChatRequest } from "@/types/api.types";
 import { useSettings } from "./SettingsContext";
 
 type ChatListItem = { id: string; title: string };

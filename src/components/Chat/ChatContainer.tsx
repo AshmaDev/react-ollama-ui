@@ -1,4 +1,4 @@
-import { useChat } from "../../contexts/ChatContext";
+import { useChat } from "@/contexts/ChatContext";
 import ChatHeader from "./ChatHeader";
 import MessageList from "./MessageList";
 import MessageForm from "./MessageForm";

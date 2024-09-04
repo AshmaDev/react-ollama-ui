@@ -6,8 +6,8 @@ import React, {
   useEffect,
   useRef,
 } from "react";
-import { getAllSettings, saveSettings } from "../services/settings";
-import { DEFAULT_API_URL } from "../services/api";
+import { getAllSettings, saveSettings } from "@/services/settings";
+import { DEFAULT_API_URL } from "@/services/api";
 
 interface SettingsContextProps {
   isSettingsOpen: boolean;

@@ -42,6 +42,9 @@ importers:
       '@tailwindcss/typography':
         specifier: ^0.5.15
         version: 0.5.15(tailwindcss@3.4.10)
+      '@types/node':
+        specifier: ^22.5.3
+        version: 22.5.3
       '@types/react':
         specifier: ^18.3.3
         version: 18.3.5
@@ -56,7 +59,7 @@ importers:
         version: 10.0.0
       '@vitejs/plugin-react':
         specifier: ^4.3.1
-        version: 4.3.1(vite@5.4.2)
+        version: 4.3.1(vite@5.4.2(@types/node@22.5.3))
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.44)
@@ -86,7 +89,7 @@ importers:
         version: 8.4.0(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)
       vite:
         specifier: ^5.4.1
-        version: 5.4.2
+        version: 5.4.2(@types/node@22.5.3)
 
 packages:
 
@@ -527,6 +530,9 @@ packages:
 
   '@types/ms@0.7.34':
     resolution: {integrity: sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==}
+
+  '@types/node@22.5.3':
+    resolution: {integrity: sha512-njripolh85IA9SQGTAqbmnNZTdxv7X/4OYGPz8tgy5JDr8MP+uDBa921GpYEoDDnwm0Hmn5ZPeJgiiSTPoOzkQ==}
 
   '@types/prop-types@15.7.12':
     resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
@@ -1648,6 +1654,9 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  undici-types@6.19.8:
+    resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
+
   unified@11.0.5:
     resolution: {integrity: sha512-xKvGhPWw3k84Qjh8bI3ZeJjqnyadK+GEFtazSfZv/rKeTkTjOJho6mFqh2SM96iIcZokxiOpg78GazTSg8+KHA==}
 
@@ -2147,6 +2156,10 @@ snapshots:
 
   '@types/ms@0.7.34': {}
 
+  '@types/node@22.5.3':
+    dependencies:
+      undici-types: 6.19.8
+
   '@types/prop-types@15.7.12': {}
 
   '@types/react-dom@18.3.0':
@@ -2251,14 +2264,14 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@vitejs/plugin-react@4.3.1(vite@5.4.2)':
+  '@vitejs/plugin-react@4.3.1(vite@5.4.2(@types/node@22.5.3))':
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-transform-react-jsx-self': 7.24.7(@babel/core@7.25.2)
       '@babel/plugin-transform-react-jsx-source': 7.24.7(@babel/core@7.25.2)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.4.2
+      vite: 5.4.2(@types/node@22.5.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -3451,6 +3464,8 @@ snapshots:
 
   typescript@5.5.4: {}
 
+  undici-types@6.19.8: {}
+
   unified@11.0.5:
     dependencies:
       '@types/unist': 3.0.3
@@ -3508,12 +3523,13 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
 
-  vite@5.4.2:
+  vite@5.4.2(@types/node@22.5.3):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.44
       rollup: 4.21.2
     optionalDependencies:
+      '@types/node': 22.5.3
       fsevents: 2.3.3
 
   which@2.0.2:

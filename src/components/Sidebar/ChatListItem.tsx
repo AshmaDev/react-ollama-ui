@@ -1,5 +1,5 @@
 import { Trash } from "@phosphor-icons/react";
-import { useChat } from "../../contexts/ChatContext";
+import { useChat } from "@/contexts/ChatContext";
 
 interface ChatListItemProps {
   id: string;

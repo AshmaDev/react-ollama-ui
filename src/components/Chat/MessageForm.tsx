@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { PaperPlane } from "@phosphor-icons/react";
-import { useChat } from "../../contexts/ChatContext";
-import { useSettings } from "../../contexts/SettingsContext";
+import { useChat } from "@/contexts/ChatContext";
+import { useSettings } from "@/contexts/SettingsContext";
 
 const MessageForm = () => {
   const { model } = useSettings();

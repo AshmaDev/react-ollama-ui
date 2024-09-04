@@ -3,7 +3,7 @@ import {
   ChatRequest,
   ChatResponse,
   ListLocalModelsResponse,
-} from "../types/api.types";
+} from "@/types/api.types";
 import { getSettingByKey } from "./settings";
 
 export const DEFAULT_API_URL = "http://localhost:11434/api";

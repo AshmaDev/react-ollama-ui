@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
+import { useChat } from "@/contexts/ChatContext";
 import Message from "./Message";
-import { useChat } from "../../contexts/ChatContext";
 
 const MessageList = () => {
   const { messages } = useChat();

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useSettings } from "../../contexts/SettingsContext";
-import { listLocalModels } from "../../services/api";
+import { useSettings } from "@/contexts/SettingsContext";
+import { listLocalModels } from "@/services/api";
 import Select from "../common/Select";
 
 const ModelSelector = () => {

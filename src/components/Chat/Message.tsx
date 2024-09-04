@@ -2,6 +2,7 @@ import cn from "classnames";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight as lightTheme } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import Logo from "../common/Logo";
 
 interface MessageProps {
   text: string;
@@ -14,9 +15,7 @@ const Message = ({ type, text, isUser }: MessageProps) => {
     <div
       className={`relative flex ${isUser ? "justify-end" : "justify-start"}`}
     >
-      {!isUser && (
-        <div className="absolute top-2 -left-5 w-6 h-6 rounded-full border bg-[url(/favicon/icon.svg)] bg-cover" />
-      )}
+      {!isUser && <Logo size={6} className="absolute top-2 -left-5" />}
 
       <div
         className={cn("px-4 py-2 rounded-xl", {

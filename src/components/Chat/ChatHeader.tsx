@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useChat } from "../../contexts/ChatContext";
+import { useChat } from "@/contexts/ChatContext";
 import Input from "../common/Input";
 
 const ChatHeader = () => {

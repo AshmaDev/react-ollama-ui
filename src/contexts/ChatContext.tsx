@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ChatMessage } from "../types/api.types";
 import {
   getAllChats,
@@ -39,6 +39,7 @@ const ChatContext = createContext<ChatContextProps | undefined>(undefined);
 
 export const ChatProvider = ({ children }: ChatProviderProps) => {
   const { chatId } = useParams<{ chatId: string }>();
+  const navigate = useNavigate();
 
   const [chatList, setChatList] = useState<ChatListItem[]>([]);
   const [title, setTitle] = useState<string>(DEFAULT_CHAT_TITLE);
@@ -46,7 +47,6 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
 
   useEffect(() => {
     const loadChat = async () => {
-      console.log("ChatId", chatId);
       if (chatId) {
         const chat = await getChat(chatId);
 
@@ -74,7 +74,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
   }, []);
 
   const addToChatList = async (id: string) => {
-    setChatList((prev) => [...prev, { id, title: DEFAULT_CHAT_TITLE }]);
+    setChatList((prev) => [...prev, { id, title }]);
   };
 
   const changeChatTitle = async () => {
@@ -93,14 +93,13 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     }
   };
 
-  const deleteChatById = async (chatId: string) => {
+  const deleteChatById = async (id: string) => {
     try {
-      await deleteChat(chatId);
-      setChatList((prevList) => prevList.filter((chat) => chat.id !== chatId));
+      await deleteChat(id);
+      setChatList((prevList) => prevList.filter((chat) => chat.id !== id));
 
-      if (chatId === chatId) {
-        setMessages([]);
-        setTitle("New Chat");
+      if (id === chatId) {
+        navigate("/");
       }
     } catch (error) {
       console.error("Error deleting chat:", error);

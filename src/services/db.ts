@@ -20,8 +20,8 @@ export const initDB = async () => {
 
 export const saveChat = async (
   chatId: string,
-  messages: ChatMessage[],
-  title: string = DEFAULT_CHAT_TITLE
+  title: string,
+  messages: ChatMessage[]
 ) => {
   const db = await initDB();
 

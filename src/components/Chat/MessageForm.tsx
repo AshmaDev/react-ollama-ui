@@ -10,7 +10,7 @@ import { saveChat } from "../../services/db";
 
 const MessageForm = () => {
   const { model } = useSettings();
-  const { chatId, messages, setMessages, addToChatList } = useChat();
+  const { chatId, title, messages, setMessages, addToChatList } = useChat();
   const [input, setInput] = useState("");
   const navigate = useNavigate();
 
@@ -22,10 +22,12 @@ const MessageForm = () => {
   };
 
   const sendMessage = async (message: string) => {
-    if (!chatId) {
-      const newChatId = uuidv4();
-      addToChatList(newChatId);
-      navigate(`/chat/${newChatId}`);
+    let currentChatId = chatId;
+
+    if (!currentChatId) {
+      currentChatId = uuidv4();
+      addToChatList(currentChatId);
+      navigate(`/chat/${currentChatId}`);
     }
 
     const userMessage: ChatMessage = { role: "user", content: message };
@@ -49,9 +51,7 @@ const MessageForm = () => {
         });
       });
 
-      if (chatId) {
-        saveChat(chatId, [...messages, userMessage, botMessage]);
-      }
+      saveChat(currentChatId, title, [...messages, userMessage, botMessage]);
     } catch (error) {
       console.error("Error generating chat:", error);
     }

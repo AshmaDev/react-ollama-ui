@@ -1,9 +1,8 @@
-import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { SettingsProvider } from "./contexts/SettingsContext";
 import Chat from "./screens/Chat";
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <SettingsProvider>
       <BrowserRouter>

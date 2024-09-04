@@ -14,13 +14,14 @@ const ChatListItem = ({ id, title, onClick }: ChatListItemProps) => {
     onClick(id);
   };
 
-  const handleDelete = () => {
+  const handleDelete = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     deleteChatById(id);
   };
 
   return (
     <div
-      className="group flex justify-between p-3 rounded-xl cursor-pointer transition-colors duration-200  bg-neutral-50 hover:bg-neutral-100"
+      className="group flex justify-between p-3 rounded-xl cursor-pointer transition-colors duration-200 bg-neutral-50 hover:bg-neutral-100"
       onClick={handleClick}
     >
       {title}

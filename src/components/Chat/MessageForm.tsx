@@ -71,9 +71,15 @@ const MessageForm = () => {
           }
         }}
         placeholder="Type your message..."
+        disabled={!model}
       />
 
-      <button type="button" className="text-neutral-600" onClick={handleSend}>
+      <button
+        type="button"
+        className="text-neutral-600"
+        onClick={handleSend}
+        disabled={!model}
+      >
         <PaperPlane size={24} />
       </button>
     </div>

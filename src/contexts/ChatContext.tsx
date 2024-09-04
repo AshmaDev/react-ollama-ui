@@ -12,7 +12,7 @@ import {
   getChat,
   updateChatTitle,
   deleteChat,
-} from "../services/db";
+} from "../services/chat";
 
 type ChatListItem = { id: string; title: string };
 

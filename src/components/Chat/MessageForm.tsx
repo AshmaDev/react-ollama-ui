@@ -6,7 +6,7 @@ import { useChat } from "../../contexts/ChatContext";
 import { useSettings } from "../../contexts/SettingsContext";
 import { ChatMessage, ChatRequest } from "../../types/api.types";
 import { generateChat } from "../../services/api";
-import { saveChat } from "../../services/db";
+import { saveChat } from "../../services/chat";
 
 const MessageForm = () => {
   const { model } = useSettings();

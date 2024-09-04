@@ -1,4 +1,13 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  useEffect,
+  useRef,
+} from "react";
+import { getAllSettings, saveSettings } from "../services/settings";
+import { DEFAULT_API_URL } from "../services/api";
 
 interface SettingsContextProps {
   isSettingsOpen: boolean;
@@ -15,17 +24,41 @@ interface SettingsProviderProps {
   children: React.ReactNode;
 }
 
-const DEFAULT_API_URL = "http://localhost:11434/api";
-
 const SettingsContext = createContext<SettingsContextProps | undefined>(
   undefined
 );
 
 export const SettingsProvider = ({ children }: SettingsProviderProps) => {
+  const isFirstRender = useRef(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+
   const [model, setModel] = useState<string>("");
   const [apiUrl, setApiUrl] = useState<string>(DEFAULT_API_URL);
   const [debugMode, setDebugMode] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      const settings = await getAllSettings();
+
+      console.log(`Settings:`, settings);
+
+      setModel(settings.model || "");
+      setApiUrl(settings.apiUrl || DEFAULT_API_URL);
+      setDebugMode(settings.debugMode || false);
+
+      isFirstRender.current = false;
+    };
+
+    fetchSettings();
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      return;
+    }
+
+    saveSettings({ model, apiUrl, debugMode });
+  }, [model, apiUrl, debugMode]);
 
   const value = useMemo(
     () => ({

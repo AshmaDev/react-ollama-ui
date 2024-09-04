@@ -4,16 +4,36 @@ import {
   ChatResponse,
   ListLocalModelsResponse,
 } from "../types/api.types";
+import { getSettingByKey } from "./settings";
 
-const baseUrl = "http://localhost:11434/api";
+export const DEFAULT_API_URL = "http://localhost:11434/api";
 
-const getApiUrl = (path: string) => `${baseUrl}${path}`;
+const getApiUrl = async (path: string): Promise<string> => {
+  let apiUrl = DEFAULT_API_URL;
+
+  try {
+    const setting = await getSettingByKey("apiUrl");
+
+    if (setting) {
+      apiUrl = setting;
+    }
+  } catch (error) {
+    console.warn(
+      "Failed to retrieve API URL from settings, using default:",
+      error
+    );
+  }
+
+  return `${apiUrl}${path}`;
+};
 
 export const generateChat = async (
   request: ChatRequest,
   onDataReceived: (data: ChatPartResponse) => void
 ): Promise<ChatResponse[]> => {
-  const res = await fetch(getApiUrl("/chat"), {
+  const apiUrl = await getApiUrl("/chat");
+
+  const res = await fetch(apiUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -72,7 +92,9 @@ export const generateChat = async (
 };
 
 export const listLocalModels = async (): Promise<ListLocalModelsResponse> => {
-  const response = await fetch(getApiUrl("/tags"), {
+  const apiUrl = await getApiUrl("/tags");
+
+  const response = await fetch(apiUrl, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

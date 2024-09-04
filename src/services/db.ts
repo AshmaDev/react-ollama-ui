@@ -1,59 +1,24 @@
 import { openDB } from "idb";
-import { ChatMessage } from "../types/api.types";
 
-const DB_NAME = "chatDB";
-const STORE_NAME = "chats";
-const DEFAULT_CHAT_TITLE = "New Chat";
+const DB_NAME = "reactOllamaDB";
+const DB_VERSION = 1;
+
+export const SETTINGS_STORE_NAME = "settings";
+export const CHATS_STORE_NAME = "chats";
 
 export const initDB = async () => {
-  return openDB(DB_NAME, 1, {
+  return openDB(DB_NAME, DB_VERSION, {
     upgrade(db) {
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME, {
+      if (!db.objectStoreNames.contains(SETTINGS_STORE_NAME)) {
+        db.createObjectStore(SETTINGS_STORE_NAME);
+      }
+
+      if (!db.objectStoreNames.contains(CHATS_STORE_NAME)) {
+        db.createObjectStore(CHATS_STORE_NAME, {
           keyPath: "id",
           autoIncrement: true,
         });
       }
     },
   });
-};
-
-export const saveChat = async (
-  chatId: string,
-  title: string,
-  messages: ChatMessage[]
-) => {
-  const db = await initDB();
-
-  return db.put(STORE_NAME, { id: chatId, title, messages });
-};
-
-export const getChat = async (chatId: string) => {
-  const db = await initDB();
-
-  return db.get(STORE_NAME, chatId);
-};
-
-export const getAllChats = async () => {
-  const db = await initDB();
-
-  return db.getAll(STORE_NAME);
-};
-
-export const updateChatTitle = async (chatId: string, title: string) => {
-  const db = await initDB();
-  const chat = await db.get(STORE_NAME, chatId);
-
-  if (chat) {
-    chat.title = title;
-    return db.put(STORE_NAME, chat);
-  }
-
-  throw new Error(`Chat with id ${chatId} not found`);
-};
-
-export const deleteChat = async (chatId: string) => {
-  const db = await initDB();
-
-  return db.delete(STORE_NAME, chatId);
 };

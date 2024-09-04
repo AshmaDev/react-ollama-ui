@@ -54,6 +54,7 @@ const SettingsSidebar = () => {
 
       <div className="mb-4">
         <p className="block text-sm font-medium mb-2">Select Model</p>
+
         {loading ? (
           <p>Loading models...</p>
         ) : error ? (

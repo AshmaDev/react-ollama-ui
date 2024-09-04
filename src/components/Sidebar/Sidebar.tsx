@@ -1,12 +1,16 @@
+import { useNavigate } from "react-router-dom";
 import { Plus, Sliders } from "@phosphor-icons/react";
+import { useSettings } from "../../contexts/SettingsContext";
 import Button from "../common/Button";
 import ChatList from "./ChatList";
-import { useSettings } from "../../contexts/SettingsContext";
 
 const Sidebar = () => {
   const { setIsSettingsOpen } = useSettings();
+  const navigate = useNavigate();
 
-  const handleNewChat = () => {};
+  const handleNewChat = () => {
+    navigate("/");
+  };
 
   const handleToggleSettings = () => {
     setIsSettingsOpen((prev) => !prev);

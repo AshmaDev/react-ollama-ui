@@ -9,6 +9,9 @@ export default {
           css: {
             pre: {
               backgroundColor: "transparent",
+              minWidth: "stretch",
+              maxWidth: "0",
+              padding: 0,
             },
           },
         },

@@ -1,14 +1,17 @@
 import React from "react";
-import { ChatProvider } from "./contexts/ChatContext";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { SettingsProvider } from "./contexts/SettingsContext";
 import Chat from "./screens/Chat";
 
 const App: React.FC = () => {
   return (
     <SettingsProvider>
-      <ChatProvider>
-        <Chat />
-      </ChatProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/chat/:chatId" element={<Chat />} />
+          <Route path="/" element={<Chat />} />
+        </Routes>
+      </BrowserRouter>
     </SettingsProvider>
   );
 };

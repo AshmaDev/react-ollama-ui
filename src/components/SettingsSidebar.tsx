@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { ArrowLineRight } from "@phosphor-icons/react";
-import { listLocalModels } from "../services/api";
+import { useSettings } from "../contexts/SettingsContext";
 import Select from "./common/Select";
 import Input from "./common/Input";
 import Toggle from "./common/Toggle";
-import { useSettings } from "../contexts/SettingsContext";
+import { listLocalModels } from "../services/api";
 
 const SettingsSidebar = () => {
   const {

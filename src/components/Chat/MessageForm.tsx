@@ -1,14 +1,18 @@
+import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { PaperPlane } from "@phosphor-icons/react";
 import { useChat } from "../../contexts/ChatContext";
 import { useSettings } from "../../contexts/SettingsContext";
 import { ChatMessage, ChatRequest } from "../../types/api.types";
 import { generateChat } from "../../services/api";
+import { saveChat } from "../../services/db";
 
 const MessageForm = () => {
   const { model } = useSettings();
-  const { messages, setMessages } = useChat();
+  const { chatId, messages, setMessages, addToChatList } = useChat();
   const [input, setInput] = useState("");
+  const navigate = useNavigate();
 
   const handleSend = () => {
     if (input.trim()) {
@@ -18,6 +22,12 @@ const MessageForm = () => {
   };
 
   const sendMessage = async (message: string) => {
+    if (!chatId) {
+      const newChatId = uuidv4();
+      addToChatList(newChatId);
+      navigate(`/chat/${newChatId}`);
+    }
+
     const userMessage: ChatMessage = { role: "user", content: message };
     setMessages((prevMessages) => [...prevMessages, userMessage]);
 
@@ -38,8 +48,12 @@ const MessageForm = () => {
           return updatedMessages;
         });
       });
+
+      if (chatId) {
+        saveChat(chatId, [...messages, userMessage, botMessage]);
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Error generating chat:", error);
     }
   };
 

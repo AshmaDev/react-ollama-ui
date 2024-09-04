@@ -3,7 +3,17 @@
 export default {
   content: ["./src/**/*.{tsx,ts,jsx,js}"],
   theme: {
-    extend: {},
+    extend: {
+      typography: ({ theme }) => ({
+        DEFAULT: {
+          css: {
+            pre: {
+              backgroundColor: "transparent",
+            },
+          },
+        },
+      }),
+    },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/typography")],
 };

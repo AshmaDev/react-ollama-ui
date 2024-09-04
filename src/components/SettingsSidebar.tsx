@@ -1,34 +1,31 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLineRight } from "@phosphor-icons/react";
 import { listLocalModels } from "../services/api";
 import Select from "./common/Select";
 import Input from "./common/Input";
 import Toggle from "./common/Toggle";
+import { useSettings } from "../contexts/SettingsContext";
 
-interface SettingsSidebarProps {
-  onClose: () => void;
-  model: string;
-  setModel: React.Dispatch<React.SetStateAction<string>>;
-  apiUrl: string;
-  setApiUrl: React.Dispatch<React.SetStateAction<string>>;
-  debugMode: boolean;
-  setDebugMode: React.Dispatch<React.SetStateAction<boolean>>;
-}
+const SettingsSidebar = () => {
+  const {
+    setIsSettingsOpen,
+    model,
+    setModel,
+    apiUrl,
+    setApiUrl,
+    debugMode,
+    setDebugMode,
+  } = useSettings();
 
-const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
-  onClose,
-  model,
-  setModel,
-  apiUrl,
-  setApiUrl,
-  debugMode,
-  setDebugMode,
-}) => {
   const [models, setModels] = useState<
     { name: string; modified_at: string; size: number }[]
   >([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const handleClose = () => {
+    setIsSettingsOpen(false);
+  };
 
   useEffect(() => {
     const fetchModels = async () => {
@@ -50,13 +47,13 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
       <div className="flex justify-between items-center border-b border-neutral-100 pb-4 mb-4">
         <h2 className="text-lg font-semibold">Settings</h2>
 
-        <button className="text-neutral-600" onClick={onClose}>
+        <button className="text-neutral-600" onClick={handleClose}>
           <ArrowLineRight size={24} />
         </button>
       </div>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-2">Select Model</label>
+        <p className="block text-sm font-medium mb-2">Select Model</p>
         {loading ? (
           <p>Loading models...</p>
         ) : error ? (

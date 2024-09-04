@@ -6,6 +6,7 @@ export type ChatRequest = {
 export type ChatMessage = {
   role: string;
   content: string;
+  type?: string;
 };
 
 export type ChatCompletedResponse = {

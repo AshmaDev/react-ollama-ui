@@ -1,13 +1,16 @@
 import { Plus, Sliders } from "@phosphor-icons/react";
 import Button from "../common/Button";
 import ChatList from "./ChatList";
+import { useSettings } from "../../contexts/SettingsContext";
 
-interface SidebarProps {
-  onSettingsClick: () => void;
-}
+const Sidebar = () => {
+  const { setIsSettingsOpen } = useSettings();
 
-const Sidebar = ({ onSettingsClick }: SidebarProps) => {
   const handleNewChat = () => {};
+
+  const handleToggleSettings = () => {
+    setIsSettingsOpen((prev) => !prev);
+  };
 
   return (
     <div className="w-64 bg-white text-neutral-800 flex flex-col border-r border-gray-200">
@@ -30,7 +33,7 @@ const Sidebar = ({ onSettingsClick }: SidebarProps) => {
           <Button
             block
             label="Settings"
-            onClick={onSettingsClick}
+            onClick={handleToggleSettings}
             Icon={<Sliders size={20} />}
           />
         </div>

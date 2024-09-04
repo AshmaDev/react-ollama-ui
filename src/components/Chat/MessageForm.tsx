@@ -1,17 +1,45 @@
 import { useState } from "react";
 import { PaperPlane } from "@phosphor-icons/react";
+import { useChat } from "../../contexts/ChatContext";
+import { useSettings } from "../../contexts/SettingsContext";
+import { ChatMessage, ChatRequest } from "../../types/api.types";
+import { generateChat } from "../../services/api";
 
-interface MessageFormProps {
-  onSendMessage: (message: string) => void;
-}
-
-const MessageForm = ({ onSendMessage }: MessageFormProps) => {
+const MessageForm = () => {
+  const { model } = useSettings();
+  const { messages, setMessages } = useChat();
   const [input, setInput] = useState("");
 
   const handleSend = () => {
     if (input.trim()) {
-      onSendMessage(input.trim());
+      sendMessage(input.trim());
       setInput("");
+    }
+  };
+
+  const sendMessage = async (message: string) => {
+    const userMessage: ChatMessage = { role: "user", content: message };
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
+
+    const chatRequest: ChatRequest = {
+      model,
+      messages: [...messages, userMessage],
+    };
+
+    let botMessage: ChatMessage = { role: "bot", content: "" };
+    setMessages((prevMessages) => [...prevMessages, botMessage]);
+
+    try {
+      await generateChat(chatRequest, (data) => {
+        botMessage.content += data.message.content;
+        setMessages((prevMessages) => {
+          const updatedMessages = [...prevMessages];
+          updatedMessages[updatedMessages.length - 1] = { ...botMessage };
+          return updatedMessages;
+        });
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
 

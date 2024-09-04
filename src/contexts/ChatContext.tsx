@@ -7,7 +7,12 @@ import React, {
 } from "react";
 import { useParams } from "react-router-dom";
 import { ChatMessage } from "../types/api.types";
-import { getAllChats, getChat, updateChatTitle } from "../services/db";
+import {
+  getAllChats,
+  getChat,
+  updateChatTitle,
+  deleteChat,
+} from "../services/db";
 
 type ChatListItem = { id: string; title: string };
 
@@ -21,6 +26,7 @@ interface ChatContextProps {
   setChatList: React.Dispatch<React.SetStateAction<ChatListItem[]>>;
   addToChatList: (chatId: string) => void;
   changeChatTitle: () => void;
+  deleteChatById: (chatId: string) => void;
 }
 
 interface ChatProviderProps {
@@ -87,6 +93,20 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     }
   };
 
+  const deleteChatById = async (chatId: string) => {
+    try {
+      await deleteChat(chatId);
+      setChatList((prevList) => prevList.filter((chat) => chat.id !== chatId));
+
+      if (chatId === chatId) {
+        setMessages([]);
+        setTitle("New Chat");
+      }
+    } catch (error) {
+      console.error("Error deleting chat:", error);
+    }
+  };
+
   const value = useMemo(
     () => ({
       chatId,
@@ -98,6 +118,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
       setChatList,
       addToChatList,
       changeChatTitle,
+      deleteChatById,
     }),
     [
       chatId,
@@ -109,6 +130,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
       setChatList,
       addToChatList,
       changeChatTitle,
+      deleteChatById,
     ]
   );
 

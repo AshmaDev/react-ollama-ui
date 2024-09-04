@@ -24,16 +24,19 @@ export const saveChat = async (
   title: string = DEFAULT_CHAT_TITLE
 ) => {
   const db = await initDB();
+
   return db.put(STORE_NAME, { id: chatId, title, messages });
 };
 
 export const getChat = async (chatId: string) => {
   const db = await initDB();
+
   return db.get(STORE_NAME, chatId);
 };
 
 export const getAllChats = async () => {
   const db = await initDB();
+
   return db.getAll(STORE_NAME);
 };
 
@@ -47,4 +50,10 @@ export const updateChatTitle = async (chatId: string, title: string) => {
   }
 
   throw new Error(`Chat with id ${chatId} not found`);
+};
+
+export const deleteChat = async (chatId: string) => {
+  const db = await initDB();
+
+  return db.delete(STORE_NAME, chatId);
 };

@@ -16,6 +16,7 @@ const ChatListItem = ({ id, title, onClick }: ChatListItemProps) => {
 
   const handleDelete = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
+
     deleteChatById(id);
   };
 

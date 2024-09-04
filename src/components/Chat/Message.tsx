@@ -17,6 +17,7 @@ const Message = ({ type, text, isUser }: MessageProps) => {
       {!isUser && (
         <div className="absolute top-2 -left-5 w-6 h-6 rounded-full border bg-[url(/favicon/icon.svg)] bg-cover" />
       )}
+
       <div
         className={cn("px-4 py-2 rounded-xl", {
           "text-red-500": type === "error",

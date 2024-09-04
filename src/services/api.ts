@@ -100,5 +100,6 @@ export const listLocalModels = async (): Promise<ListLocalModelsResponse> => {
       "Content-Type": "application/json",
     },
   });
+
   return await response.json();
 };

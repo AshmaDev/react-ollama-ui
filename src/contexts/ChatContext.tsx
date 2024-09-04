@@ -5,14 +5,18 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { useNavigate, useParams } from "react-router-dom";
-import { ChatMessage } from "../types/api.types";
 import {
   getAllChats,
   getChat,
   updateChatTitle,
   deleteChat,
+  saveChat,
 } from "../services/chat";
+import { generateChat } from "../services/api";
+import { ChatMessage, ChatRequest } from "../types/api.types";
+import { useSettings } from "./SettingsContext";
 
 type ChatListItem = { id: string; title: string };
 
@@ -27,6 +31,7 @@ interface ChatContextProps {
   addToChatList: (chatId: string) => void;
   changeChatTitle: () => void;
   deleteChatById: (chatId: string) => void;
+  sendMessage: (chatId: string) => void;
 }
 
 interface ChatProviderProps {
@@ -38,6 +43,7 @@ const DEFAULT_CHAT_TITLE = "New Chat";
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
 
 export const ChatProvider = ({ children }: ChatProviderProps) => {
+  const { model } = useSettings();
   const { chatId } = useParams<{ chatId: string }>();
   const navigate = useNavigate();
 
@@ -106,6 +112,42 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     }
   };
 
+  const sendMessage = async (message: string) => {
+    let currentChatId = chatId;
+
+    if (!currentChatId) {
+      currentChatId = uuidv4();
+      addToChatList(currentChatId);
+      navigate(`/chat/${currentChatId}`);
+    }
+
+    const userMessage: ChatMessage = { role: "user", content: message };
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
+
+    const chatRequest: ChatRequest = {
+      model,
+      messages: [...messages, userMessage],
+    };
+
+    let botMessage: ChatMessage = { role: "bot", content: "" };
+    setMessages((prevMessages) => [...prevMessages, botMessage]);
+
+    try {
+      await generateChat(chatRequest, (data) => {
+        botMessage.content += data.message.content;
+        setMessages((prevMessages) => {
+          const updatedMessages = [...prevMessages];
+          updatedMessages[updatedMessages.length - 1] = { ...botMessage };
+          return updatedMessages;
+        });
+      });
+
+      saveChat(currentChatId, title, [...messages, userMessage, botMessage]);
+    } catch (error) {
+      console.error("Error generating chat:", error);
+    }
+  };
+
   const value = useMemo(
     () => ({
       chatId,
@@ -118,6 +160,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
       addToChatList,
       changeChatTitle,
       deleteChatById,
+      sendMessage,
     }),
     [
       chatId,
@@ -130,6 +173,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
       addToChatList,
       changeChatTitle,
       deleteChatById,
+      sendMessage,
     ]
   );
 

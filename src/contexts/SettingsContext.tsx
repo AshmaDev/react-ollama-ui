@@ -48,10 +48,14 @@ export const SettingsProvider = ({ children }: SettingsProviderProps) => {
 
       mutate(
         async (currentSettings) => {
-          const updatedSettings = { ...currentSettings, ...newSettings };
-          await saveSettings(updatedSettings);
+          try {
+            const updatedSettings = { ...currentSettings, ...newSettings };
+            await saveSettings(updatedSettings);
 
-          return updatedSettings;
+            return updatedSettings;
+          } catch (err) {
+            if (settings.debugMode) console.error("Error saving settings", err);
+          }
         },
         {
           optimisticData: { ...settings, ...newSettings },

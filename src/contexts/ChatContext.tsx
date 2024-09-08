@@ -12,6 +12,7 @@ import useCurrentChat from "@/hooks/useCurrentChat";
 import { deleteChat, saveChat, updateChatTitle } from "@/services/chat";
 import { generateChat } from "@/services/api";
 import { useSettings } from "./SettingsContext";
+import { useUI } from "./UIContext";
 
 interface ChatContextProps {
   currentChat: TChat;
@@ -29,9 +30,10 @@ interface ChatProviderProps {
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
 
 export const ChatProvider = ({ children }: ChatProviderProps) => {
-  const { chatId } = useParams<{ chatId: string }>();
-  const { model } = useSettings();
   const navigate = useNavigate();
+  const { chatId } = useParams<{ chatId: string }>();
+  const { model, debugMode } = useSettings();
+  const { setError } = useUI();
 
   const { chatList, addToChatList, updateChatListTitle, deleteChatFromList } =
     useChatList();
@@ -44,7 +46,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
       await updateChatTitle(chatId, currentChat.title);
       updateChatListTitle(chatId, currentChat.title);
     } catch (error) {
-      console.error("Error updating chat title:", error);
+      if (debugMode) console.error("Error updating chat title:", error);
     }
   }, [chatId, currentChat.title, updateChatListTitle]);
 
@@ -58,7 +60,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
           navigate("/");
         }
       } catch (error) {
-        console.error("Error deleting chat:", error);
+        if (debugMode) console.error("Error deleting chat:", error);
       }
     },
     [chatId, deleteChatFromList, navigate]
@@ -73,7 +75,11 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
   }, [addToChatList, currentChat.title, navigate]);
 
   const sendMessage = async (message: string) => {
-    if (!model) return;
+    if (!model) {
+      setError("Select model!");
+      return;
+    }
+
     let currentChatId = chatId;
 
     if (!currentChatId) {
@@ -114,7 +120,8 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
         botMessage,
       ]);
     } catch (error) {
-      console.error("Error generating chat:", error);
+      setError("An error occured while generating response!");
+      if (debugMode) console.error("Error generating chat:", error);
     }
   };
 
@@ -143,8 +150,10 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
 
 export const useChat = () => {
   const context = useContext(ChatContext);
+
   if (!context) {
     throw new Error("useChat must be used within a ChatProvider");
   }
+
   return context;
 };

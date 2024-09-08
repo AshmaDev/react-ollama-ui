@@ -6,10 +6,9 @@ import CodeBlock from "./formatters/CodeBlock";
 interface MessageProps {
   text: string;
   isUser: boolean;
-  type?: string;
 }
 
-const Message = ({ type, text, isUser }: MessageProps) => {
+const Message = ({ text, isUser }: MessageProps) => {
   return (
     <div
       className={cn("relative flex", isUser ? "justify-end" : "justify-start")}
@@ -18,12 +17,11 @@ const Message = ({ type, text, isUser }: MessageProps) => {
 
       <div
         className={cn("px-4 py-2 rounded-xl", {
-          "text-red-500": type === "error",
           "bg-neutral-50 text-neutral-800 max-w-lg": isUser,
           "text-neutral-800 max-w-2xl": !isUser,
         })}
       >
-        {!isUser && type !== "error" ? (
+        {!isUser ? (
           <ReactMarkdown
             className="prose"
             components={{

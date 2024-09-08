@@ -11,17 +11,10 @@ export const DEFAULT_API_URL = "http://localhost:11434/api";
 const getApiUrl = async (path: string): Promise<string> => {
   let apiUrl = DEFAULT_API_URL;
 
-  try {
-    const setting = await getSettingByKey("apiUrl");
+  const setting = await getSettingByKey("apiUrl");
 
-    if (setting) {
-      apiUrl = setting;
-    }
-  } catch (error) {
-    console.warn(
-      "Failed to retrieve API URL from settings, using default:",
-      error
-    );
+  if (setting) {
+    apiUrl = setting;
   }
 
   return `${apiUrl}${path}`;
@@ -65,26 +58,18 @@ export const generateChat = async (
 
         for (let chunk of completeChunks) {
           if (chunk.trim()) {
-            try {
-              const parsedChunk: TChatPartResponse = JSON.parse(chunk);
-              onDataReceived(parsedChunk);
-              results.push(parsedChunk);
-            } catch (e) {
-              console.error("Failed to parse chunk:", e, chunk);
-            }
+            const parsedChunk: TChatPartResponse = JSON.parse(chunk);
+            onDataReceived(parsedChunk);
+            results.push(parsedChunk);
           }
         }
       }
     }
 
     if (buffer.trim()) {
-      try {
-        const parsedChunk: TChatPartResponse = JSON.parse(buffer);
-        onDataReceived(parsedChunk);
-        results.push(parsedChunk);
-      } catch (e) {
-        console.error("Failed to parse final buffer:", e, buffer);
-      }
+      const parsedChunk: TChatPartResponse = JSON.parse(buffer);
+      onDataReceived(parsedChunk);
+      results.push(parsedChunk);
     }
   }
 

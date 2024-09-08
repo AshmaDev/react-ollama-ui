@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  # CPU-only
+  ollama-model:
+    image: ollama/ollama:latest
+    container_name: ollama-model
+    volumes:
+      - ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+
+  react-ollama-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: react-ollama-ui
+    ports:
+      - "3000:3000"
+    depends_on:
+      - ollama-model
+
+volumes:
+  ollama:

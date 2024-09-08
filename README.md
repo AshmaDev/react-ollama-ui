@@ -6,12 +6,15 @@ React Ollama UI is a web interface for [ollama.ai](https://ollama.ai/download), 
 
 ### Prerequisites
 
-1. Download and install [ollama CLI](https://ollama.ai/download).
-2. Download and install [pnpm](https://pnpm.io/installation) and [node](https://nodejs.org/en/download)
+1. Download and install [Ollama CLI](https://ollama.ai/download).
+
+2. Run your selected model [Ollama library](https://ollama.com/library).
 
 ```bash
 ollama run <model-name>
 ```
+
+3. Download and install [pnpm](https://pnpm.io/installation) and [node](https://nodejs.org/en/download).
 
 ### Getting Started
 
@@ -22,6 +25,15 @@ git clone https://github.com/AshmaDev/react-ollama-ui.git
 cd react-ollama-ui
 pnpm install
 pnpm run dev
+```
+
+## Quick Start with Docker 🐳
+
+> [!NOTE]  
+> The current Docker Compose configuration runs Ollama on CPU only. If you wish to use an NVIDIA or AMD GPU, you will need to modify the `docker-compose.yml` file. For more details, visit the [Ollama Docker Hub page](https://hub.docker.com/r/ollama/ollama).
+
+```bash
+docker compose up -d
 ```
 
 ---

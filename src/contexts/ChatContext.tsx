@@ -28,7 +28,7 @@ interface ChatProviderProps {
 
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
 
-export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
+export const ChatProvider = ({ children }: ChatProviderProps) => {
   const { chatId } = useParams<{ chatId: string }>();
   const { model } = useSettings();
   const navigate = useNavigate();

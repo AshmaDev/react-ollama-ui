@@ -50,6 +50,7 @@ export const SettingsProvider = ({ children }: SettingsProviderProps) => {
         async (currentSettings) => {
           const updatedSettings = { ...currentSettings, ...newSettings };
           await saveSettings(updatedSettings);
+
           return updatedSettings;
         },
         {

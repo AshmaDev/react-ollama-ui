@@ -1,10 +1,10 @@
-import { ChatMessage } from "@/types/api.types";
+import { TChatMessage } from "@/types/api.types";
 import { CHATS_STORE_NAME, initDB } from "./db";
 
 export const saveChat = async (
   chatId: string,
   title: string,
-  messages: ChatMessage[]
+  messages: TChatMessage[]
 ) => {
   const db = await initDB();
 

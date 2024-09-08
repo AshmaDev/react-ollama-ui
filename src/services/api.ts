@@ -1,8 +1,8 @@
 import {
-  ChatPartResponse,
-  ChatRequest,
-  ChatResponse,
-  ListLocalModelsResponse,
+  TChatPartResponse,
+  TChatRequest,
+  TChatResponse,
+  TListLocalModelsResponse,
 } from "@/types/api.types";
 import { getSettingByKey } from "./settings";
 
@@ -28,9 +28,9 @@ const getApiUrl = async (path: string): Promise<string> => {
 };
 
 export const generateChat = async (
-  request: ChatRequest,
-  onDataReceived: (data: ChatPartResponse) => void
-): Promise<ChatResponse[]> => {
+  request: TChatRequest,
+  onDataReceived: (data: TChatPartResponse) => void
+): Promise<TChatResponse[]> => {
   const apiUrl = await getApiUrl("/chat");
 
   const res = await fetch(apiUrl, {
@@ -46,7 +46,7 @@ export const generateChat = async (
   }
 
   const reader = res.body?.getReader();
-  let results: ChatResponse[] = [];
+  let results: TChatResponse[] = [];
   let buffer = "";
 
   if (reader) {
@@ -66,7 +66,7 @@ export const generateChat = async (
         for (let chunk of completeChunks) {
           if (chunk.trim()) {
             try {
-              const parsedChunk: ChatPartResponse = JSON.parse(chunk);
+              const parsedChunk: TChatPartResponse = JSON.parse(chunk);
               onDataReceived(parsedChunk);
               results.push(parsedChunk);
             } catch (e) {
@@ -79,7 +79,7 @@ export const generateChat = async (
 
     if (buffer.trim()) {
       try {
-        const parsedChunk: ChatPartResponse = JSON.parse(buffer);
+        const parsedChunk: TChatPartResponse = JSON.parse(buffer);
         onDataReceived(parsedChunk);
         results.push(parsedChunk);
       } catch (e) {
@@ -91,7 +91,7 @@ export const generateChat = async (
   return results;
 };
 
-export const listLocalModels = async (): Promise<ListLocalModelsResponse> => {
+export const listLocalModels = async (): Promise<TListLocalModelsResponse> => {
   const apiUrl = await getApiUrl("/tags");
 
   const response = await fetch(apiUrl, {

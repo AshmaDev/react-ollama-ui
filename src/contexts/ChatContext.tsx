@@ -1,148 +1,118 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, { createContext, useContext, useMemo, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 import {
-  getAllChats,
-  getChat,
-  updateChatTitle,
-  deleteChat,
-  saveChat,
-} from "@/services/chat";
+  TChat,
+  TChatList,
+  TChatMessage,
+  TChatRequest,
+} from "@/types/api.types";
+import useChatList from "@/hooks/useChatList";
+import useCurrentChat from "@/hooks/useCurrentChat";
+import { deleteChat, saveChat, updateChatTitle } from "@/services/chat";
 import { generateChat } from "@/services/api";
-import { ChatMessage, ChatRequest } from "@/types/api.types";
 import { useSettings } from "./SettingsContext";
 
-type ChatListItem = { id: string; title: string };
-
 interface ChatContextProps {
-  chatId?: string;
-  title: string;
-  messages: ChatMessage[];
-  chatList: ChatListItem[];
-  setTitle: React.Dispatch<React.SetStateAction<string>>;
-  setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
-  setChatList: React.Dispatch<React.SetStateAction<ChatListItem[]>>;
-  addToChatList: (chatId: string) => void;
-  changeChatTitle: () => void;
-  deleteChatById: (chatId: string) => void;
-  sendMessage: (chatId: string) => void;
+  currentChat: TChat;
+  chatList: TChatList;
+  setTitle: (title: string) => void;
+  changeChatTitle: () => Promise<void>;
+  deleteChatById: (chatId: string) => Promise<void>;
+  sendMessage: (message: string) => Promise<void>;
 }
 
 interface ChatProviderProps {
   children: React.ReactNode;
 }
 
-const DEFAULT_CHAT_TITLE = "New Chat";
-
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
 
-export const ChatProvider = ({ children }: ChatProviderProps) => {
-  const { model } = useSettings();
+export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const { chatId } = useParams<{ chatId: string }>();
+  const { model } = useSettings();
   const navigate = useNavigate();
 
-  const [chatList, setChatList] = useState<ChatListItem[]>([]);
-  const [title, setTitle] = useState<string>(DEFAULT_CHAT_TITLE);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const { chatList, addToChatList, updateChatListTitle, deleteChatFromList } =
+    useChatList();
+  const { currentChat, setCurrentChat } = useCurrentChat(chatId);
 
-  useEffect(() => {
-    const loadChat = async () => {
-      if (chatId) {
-        const chat = await getChat(chatId);
+  const changeChatTitle = useCallback(async () => {
+    if (!chatId) return;
 
-        if (chat) {
-          setMessages(chat.messages);
-          setTitle(chat.title);
-        }
-      } else {
-        setMessages([]);
-        setTitle(DEFAULT_CHAT_TITLE);
-      }
-    };
-
-    loadChat();
-  }, [chatId]);
-
-  useEffect(() => {
-    const fetchChats = async () => {
-      const allChats = await getAllChats();
-
-      setChatList(allChats.map((chat) => ({ id: chat.id, title: chat.title })));
-    };
-
-    fetchChats();
-  }, []);
-
-  const addToChatList = async (id: string) => {
-    setChatList((prev) => [...prev, { id, title }]);
-  };
-
-  const changeChatTitle = async () => {
-    if (chatId) {
-      try {
-        await updateChatTitle(chatId, title);
-      } catch (error) {
-        console.error("Error saving title:", error);
-      }
-
-      setChatList((prevChatList) =>
-        prevChatList.map((chat) =>
-          chat.id === chatId ? { ...chat, title } : chat
-        )
-      );
-    }
-  };
-
-  const deleteChatById = async (id: string) => {
     try {
-      await deleteChat(id);
-      setChatList((prevList) => prevList.filter((chat) => chat.id !== id));
-
-      if (id === chatId) {
-        navigate("/");
-      }
+      await updateChatTitle(chatId, currentChat.title);
+      updateChatListTitle(chatId, currentChat.title);
     } catch (error) {
-      console.error("Error deleting chat:", error);
+      console.error("Error updating chat title:", error);
     }
-  };
+  }, [chatId, currentChat.title, updateChatListTitle]);
+
+  const deleteChatById = useCallback(
+    async (id: string) => {
+      try {
+        await deleteChat(id);
+        deleteChatFromList(id);
+
+        if (id === chatId) {
+          navigate("/");
+        }
+      } catch (error) {
+        console.error("Error deleting chat:", error);
+      }
+    },
+    [chatId, deleteChatFromList, navigate]
+  );
+
+  const createNewChat = useCallback((): string => {
+    const id = uuidv4();
+    addToChatList({ id, title: currentChat.title });
+    navigate(`/chat/${id}`);
+
+    return id;
+  }, [addToChatList, currentChat.title, navigate]);
 
   const sendMessage = async (message: string) => {
+    if (!model) return;
     let currentChatId = chatId;
 
     if (!currentChatId) {
-      currentChatId = uuidv4();
-      addToChatList(currentChatId);
-      navigate(`/chat/${currentChatId}`);
+      currentChatId = createNewChat();
     }
 
-    const userMessage: ChatMessage = { role: "user", content: message };
-    setMessages((prevMessages) => [...prevMessages, userMessage]);
+    const userMessage: TChatMessage = { role: "user", content: message };
+    const updatedMessages = [...currentChat.messages!, userMessage];
+    setCurrentChat((prevChat) => ({
+      ...prevChat,
+      messages: updatedMessages,
+    }));
 
-    const chatRequest: ChatRequest = {
+    const chatRequest: TChatRequest = {
       model,
-      messages: [...messages, userMessage],
+      messages: updatedMessages,
     };
 
-    let botMessage: ChatMessage = { role: "bot", content: "" };
-    setMessages((prevMessages) => [...prevMessages, botMessage]);
+    let botMessage: TChatMessage = { role: "bot", content: "" };
+    setCurrentChat((prevChat) => ({
+      ...prevChat,
+      messages: [...updatedMessages, botMessage],
+    }));
 
     try {
       await generateChat(chatRequest, (data) => {
         botMessage.content += data.message.content;
-        setMessages((prevMessages) => {
-          const updatedMessages = [...prevMessages];
+        setCurrentChat((prevChat) => {
+          const updatedMessages = [...prevChat.messages!];
           updatedMessages[updatedMessages.length - 1] = { ...botMessage };
-          return updatedMessages;
+          return { ...prevChat, messages: updatedMessages };
         });
       });
 
-      saveChat(currentChatId, title, [...messages, userMessage, botMessage]);
+      saveChat(currentChatId, currentChat.title, [
+        ...currentChat.messages,
+        userMessage,
+        botMessage,
+      ]);
     } catch (error) {
       console.error("Error generating chat:", error);
     }
@@ -150,30 +120,21 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
 
   const value = useMemo(
     () => ({
-      chatId,
-      title,
-      messages,
       chatList,
-      setTitle,
-      setMessages,
-      setChatList,
-      addToChatList,
+      currentChat,
+      setTitle: (title: string) =>
+        setCurrentChat((prev) => ({ ...prev, title })),
       changeChatTitle,
       deleteChatById,
       sendMessage,
     }),
     [
-      chatId,
-      title,
-      messages,
       chatList,
-      setTitle,
-      setMessages,
-      setChatList,
-      addToChatList,
+      currentChat,
       changeChatTitle,
       deleteChatById,
       sendMessage,
+      setCurrentChat,
     ]
   );
 
@@ -182,10 +143,8 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
 
 export const useChat = () => {
   const context = useContext(ChatContext);
-
   if (!context) {
     throw new Error("useChat must be used within a ChatProvider");
   }
-
   return context;
 };

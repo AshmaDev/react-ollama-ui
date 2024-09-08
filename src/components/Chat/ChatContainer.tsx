@@ -5,12 +5,12 @@ import MessageForm from "./MessageForm";
 import EmptyChat from "./EmptyChat";
 
 const ChatContainer = () => {
-  const { messages } = useChat();
+  const { currentChat } = useChat();
 
   return (
     <div className="flex-1 flex flex-col bg-white">
       <ChatHeader />
-      {messages.length > 0 ? <MessageList /> : <EmptyChat />}
+      {currentChat.messages.length > 0 ? <MessageList /> : <EmptyChat />}
       <MessageForm />
     </div>
   );

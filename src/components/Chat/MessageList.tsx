@@ -22,7 +22,6 @@ const MessageList = () => {
         {currentChat.messages.map((message, index) => (
           <Message
             key={index}
-            type={message.type}
             text={message.content}
             isUser={message.role === "user"}
           />

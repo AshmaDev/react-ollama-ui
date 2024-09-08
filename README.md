@@ -1,8 +1,12 @@
-# React Ollama UI: awesome UI for interacting with your local LLMs.
+# React Ollama UI
 
 React Ollama UI is a web interface for [ollama.ai](https://ollama.ai/download), a tool that enables running Large Language Models (LLMs) on your local machine.
 
-## Installation
+<p align="center">
+  <img src=".github/preview.png" alt="React Ollama UI preview">
+</p>
+
+## ⚙️ Installation
 
 ### Prerequisites
 
@@ -27,7 +31,7 @@ pnpm install
 pnpm run dev
 ```
 
-## Quick Start with Docker 🐳
+## 🐳 Quick Start with Docker
 
 > [!NOTE]  
 > The current Docker Compose configuration runs Ollama on CPU only. If you wish to use an NVIDIA or AMD GPU, you will need to modify the `docker-compose.yml` file. For more details, visit the [Ollama Docker Hub page](https://hub.docker.com/r/ollama/ollama).

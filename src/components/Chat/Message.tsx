@@ -15,7 +15,7 @@ const Message = ({ type, text, isUser }: MessageProps) => {
     <div
       className={`relative flex ${isUser ? "justify-end" : "justify-start"}`}
     >
-      {!isUser && <Logo size={6} className="absolute top-2 -left-5" />}
+      {!isUser && <Logo size="xs" className="absolute top-2 -left-5" />}
 
       <div
         className={cn("px-4 py-2 rounded-xl", {

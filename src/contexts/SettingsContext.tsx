@@ -40,8 +40,6 @@ export const SettingsProvider = ({ children }: SettingsProviderProps) => {
     const fetchSettings = async () => {
       const settings = await getAllSettings();
 
-      console.log(`Settings:`, settings);
-
       setModel(settings.model || "");
       setApiUrl(settings.apiUrl || DEFAULT_API_URL);
       setDebugMode(settings.debugMode || false);

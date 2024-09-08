@@ -1,7 +1,7 @@
 import cn from "classnames";
 
 interface InputProps {
-  value: string;
+  value?: string;
   type?: string;
   autoFocus?: boolean;
   placeholder?: string;

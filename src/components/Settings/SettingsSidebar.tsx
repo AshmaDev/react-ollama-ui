@@ -1,12 +1,13 @@
 import { ArrowLineRight } from "@phosphor-icons/react";
 import { useSettings } from "@/contexts/SettingsContext";
+import { useUI } from "@/contexts/UIContext";
 import Input from "../common/Input";
 import Toggle from "../common/Toggle";
 import ModelSelector from "./ModelSelector";
 
 const SettingsSidebar = () => {
-  const { setIsSettingsOpen, apiUrl, setApiUrl, debugMode, setDebugMode } =
-    useSettings();
+  const { setIsSettingsOpen } = useUI();
+  const { apiUrl, debugMode, setApiUrl, setDebugMode } = useSettings();
 
   const handleClose = () => {
     setIsSettingsOpen(false);
@@ -41,7 +42,7 @@ const SettingsSidebar = () => {
         <label className="block text-sm font-medium mb-2">Debug Mode</label>
         <Toggle
           initialValue={debugMode}
-          onChange={() => setDebugMode((prev) => !prev)}
+          onChange={() => setDebugMode(!debugMode)}
         />
       </div>
     </div>

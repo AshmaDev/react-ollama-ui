@@ -1,85 +1,75 @@
-import React, {
-  createContext,
-  useContext,
-  useMemo,
-  useState,
-  useEffect,
-  useRef,
-} from "react";
+import useSWR from "swr";
+import React, { createContext, useContext, useMemo, useCallback } from "react";
 import { getAllSettings, saveSettings } from "@/services/settings";
 import { DEFAULT_API_URL } from "@/services/api";
 
-interface SettingsContextProps {
-  isSettingsOpen: boolean;
-  setIsSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  model: string;
-  setModel: React.Dispatch<React.SetStateAction<string>>;
-  apiUrl: string;
-  setApiUrl: React.Dispatch<React.SetStateAction<string>>;
-  debugMode: boolean;
-  setDebugMode: React.Dispatch<React.SetStateAction<boolean>>;
+interface SettingsState {
+  model?: string;
+  apiUrl?: string;
+  debugMode?: boolean;
+}
+
+interface SettingsContextProps extends SettingsState {
+  setModel: (model: string) => void;
+  setApiUrl: (apiUrl: string) => void;
+  setDebugMode: (debugMode: boolean) => void;
 }
 
 interface SettingsProviderProps {
   children: React.ReactNode;
 }
 
+const DEFAULT_SETTINGS = {
+  model: "",
+  apiUrl: DEFAULT_API_URL,
+  debugMode: false,
+};
+
+const fetchSettings = async () => {
+  const settings = await getAllSettings();
+
+  return settings;
+};
+
 const SettingsContext = createContext<SettingsContextProps | undefined>(
   undefined
 );
 
 export const SettingsProvider = ({ children }: SettingsProviderProps) => {
-  const isFirstRender = useRef(true);
-  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
-
-  const [model, setModel] = useState<string>("");
-  const [apiUrl, setApiUrl] = useState<string>(DEFAULT_API_URL);
-  const [debugMode, setDebugMode] = useState<boolean>(false);
-
-  useEffect(() => {
-    const fetchSettings = async () => {
-      const settings = await getAllSettings();
-
-      setModel(settings.model || "");
-      setApiUrl(settings.apiUrl || DEFAULT_API_URL);
-      setDebugMode(settings.debugMode || false);
-
-      isFirstRender.current = false;
-    };
-
-    fetchSettings();
-  }, []);
-
-  useEffect(() => {
-    if (isFirstRender.current) {
-      return;
-    }
-
-    saveSettings({ model, apiUrl, debugMode });
-  }, [model, apiUrl, debugMode]);
-
-  const value = useMemo(
-    () => ({
-      isSettingsOpen,
-      setIsSettingsOpen,
-      model,
-      setModel,
-      apiUrl,
-      setApiUrl,
-      debugMode,
-      setDebugMode,
-    }),
-    [
-      isSettingsOpen,
-      setIsSettingsOpen,
-      model,
-      setModel,
-      apiUrl,
-      setApiUrl,
-      debugMode,
-      setDebugMode,
-    ]
+  const { data: settings, mutate } = useSWR<SettingsState>(
+    "settings",
+    fetchSettings,
+    { revalidateOnFocus: false }
   );
+
+  const updateSettings = useCallback(
+    (newSettings: Partial<SettingsState>) => {
+      if (!settings) return;
+
+      mutate(
+        async (currentSettings) => {
+          const updatedSettings = { ...currentSettings, ...newSettings };
+          await saveSettings(updatedSettings);
+          return updatedSettings;
+        },
+        {
+          optimisticData: { ...settings, ...newSettings },
+          rollbackOnError: true,
+        }
+      );
+    },
+    [settings, mutate]
+  );
+
+  const value = useMemo(() => {
+    return {
+      ...DEFAULT_SETTINGS,
+      ...settings,
+      setModel: (model: string) => updateSettings({ model }),
+      setApiUrl: (apiUrl: string) => updateSettings({ apiUrl }),
+      setDebugMode: (debugMode: boolean) => updateSettings({ debugMode }),
+    };
+  }, [settings, updateSettings]);
 
   return (
     <SettingsContext.Provider value={value}>

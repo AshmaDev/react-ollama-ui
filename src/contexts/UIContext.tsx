@@ -3,8 +3,10 @@ import React, { createContext, useContext, useState } from "react";
 interface UIContextProps {
   error: string;
   isSettingsOpen: boolean;
+  isPullPopupOpen: boolean;
   setError: React.Dispatch<React.SetStateAction<string>>;
   setIsSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsPullPopupOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface UIProviderProps {
@@ -14,14 +16,17 @@ interface UIProviderProps {
 const UIContext = createContext<UIContextProps | undefined>(undefined);
 
 export const UIProvider = ({ children }: UIProviderProps) => {
+  const [isPullPopupOpen, setIsPullPopupOpen] = useState<boolean>(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
   const value = {
     error,
     isSettingsOpen,
-    setIsSettingsOpen,
+    isPullPopupOpen,
     setError,
+    setIsSettingsOpen,
+    setIsPullPopupOpen,
   };
 
   return <UIContext.Provider value={value}>{children}</UIContext.Provider>;

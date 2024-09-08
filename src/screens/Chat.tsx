@@ -3,6 +3,7 @@ import { useUI } from "@/contexts/UIContext";
 import { Sidebar } from "@/components/Sidebar";
 import { ChatContainer } from "@/components/Chat";
 import { SettingsSidebar } from "@/components/Settings";
+import PullModel from "@/components/Settings/PullModel";
 
 const Chat = () => {
   const { isSettingsOpen } = useUI();
@@ -14,6 +15,8 @@ const Chat = () => {
         <ChatContainer />
         {isSettingsOpen && <SettingsSidebar />}
       </div>
+
+      <PullModel />
     </ChatProvider>
   );
 };

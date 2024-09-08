@@ -35,11 +35,12 @@ const Toggle = ({
     <div className="flex justify-between items-center">
       {title && (
         <div className="mr-4">
-          <div className="font-bold text-gray-700 dark:text-gray-300">
+          <div className="font-bold text-neutral-600">
             {title}
           </div>
+
           {subtitle && (
-            <div className="text-gray-500 dark:text-gray-400">{subtitle}</div>
+            <div className="text-neutral-400">{subtitle}</div>
           )}
         </div>
       )}

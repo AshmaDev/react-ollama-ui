@@ -17,13 +17,13 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-64 bg-white text-neutral-800 flex flex-col border-r border-gray-200">
+    <div className="w-64 bg-white text-neutral-800 flex flex-col border-r border-neutral-200">
       <div className="p-4">
         <div className="border-b border-neutral-100 pb-4">
           <Button
             block
             label="New Chat"
-            className="border"
+            className="border border-neutral-200"
             onClick={handleNewChat}
             Icon={<Plus size={20} />}
           />

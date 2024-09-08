@@ -49,3 +49,14 @@ export type TListLocalModelsResponse = {
 };
 
 export type TChatResponse = TChatCompletedResponse | TChatPartResponse;
+
+export type TPullModelRequest = {
+  name: string;
+  insecure?: boolean;
+};
+
+export type TPullModelResponse = {
+  status: string;
+  digest: string;
+  total: number;
+} 

@@ -3,6 +3,8 @@ import {
   TChatRequest,
   TChatResponse,
   TListLocalModelsResponse,
+  TPullModelRequest,
+  TPullModelResponse,
 } from "@/types/api.types";
 import { getSettingByKey } from "./settings";
 
@@ -39,7 +41,7 @@ export const generateChat = async (
   }
 
   const reader = res.body?.getReader();
-  let results: TChatResponse[] = [];
+  const results: TChatResponse[] = [];
   let buffer = "";
 
   if (reader) {
@@ -51,12 +53,12 @@ export const generateChat = async (
 
       buffer += decoder.decode(value, { stream: true });
 
-      let boundary = buffer.lastIndexOf("\n");
+      const boundary = buffer.lastIndexOf("\n");
       if (boundary !== -1) {
         const completeChunks = buffer.slice(0, boundary).split("\n");
         buffer = buffer.slice(boundary + 1);
 
-        for (let chunk of completeChunks) {
+        for (const chunk of completeChunks) {
           if (chunk.trim()) {
             const parsedChunk: TChatPartResponse = JSON.parse(chunk);
             onDataReceived(parsedChunk);
@@ -84,6 +86,22 @@ export const listLocalModels = async (): Promise<TListLocalModelsResponse> => {
     headers: {
       "Content-Type": "application/json",
     },
+  });
+
+  return await response.json();
+};
+
+export const pullModel = async (
+  request: TPullModelRequest
+): Promise<TPullModelResponse> => {
+  const apiUrl = await getApiUrl("/pull");
+
+  const response = await fetch(apiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(request),
   });
 
   return await response.json();

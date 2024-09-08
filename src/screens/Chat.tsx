@@ -1,11 +1,11 @@
-import { ChatProvider } from "../contexts/ChatContext";
-import { useSettings } from "../contexts/SettingsContext";
-import { Sidebar } from "../components/Sidebar";
-import { ChatContainer } from "../components/Chat";
-import { SettingsSidebar } from "../components/Settings";
+import { ChatProvider } from "@/contexts/ChatContext";
+import { useUI } from "@/contexts/UIContext";
+import { Sidebar } from "@/components/Sidebar";
+import { ChatContainer } from "@/components/Chat";
+import { SettingsSidebar } from "@/components/Settings";
 
 const Chat = () => {
-  const { isSettingsOpen } = useSettings();
+  const { isSettingsOpen } = useUI();
 
   return (
     <ChatProvider>

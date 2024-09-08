@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useChat } from "../../contexts/ChatContext";
+import { useChat } from "@/contexts/ChatContext";
 import ChatListItem from "./ChatListItem";
 
 const ChatList = () => {

@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
+import { useChat } from "@/contexts/ChatContext";
 import Message from "./Message";
-import { useChat } from "../../contexts/ChatContext";
 
 const MessageList = () => {
-  const { messages } = useChat();
+  const { currentChat } = useChat();
   const messageEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -14,12 +14,12 @@ const MessageList = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [currentChat.messages]);
 
   return (
     <div className="flex-1 overflow-y-auto p-4">
       <div className="space-y-4 rounded-xl p-4">
-        {messages.map((message, index) => (
+        {currentChat.messages.map((message, index) => (
           <Message
             key={index}
             type={message.type}

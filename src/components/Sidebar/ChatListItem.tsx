@@ -1,9 +1,8 @@
 import { Trash } from "@phosphor-icons/react";
-import { useChat } from "../../contexts/ChatContext";
+import { useChat } from "@/contexts/ChatContext";
+import { TChatListItem } from "@/types/api.types";
 
-interface ChatListItemProps {
-  id: string;
-  title: string;
+interface ChatListItemProps extends TChatListItem {
   onClick: (id: string) => void;
 }
 
@@ -24,7 +23,9 @@ const ChatListItem = ({ id, title, onClick }: ChatListItemProps) => {
       className="group flex justify-between p-3 rounded-xl cursor-pointer transition-colors duration-200 bg-neutral-50 hover:bg-neutral-100"
       onClick={handleClick}
     >
-      {title}
+      <div className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
+        {title}
+      </div>
 
       <button
         onClick={handleDelete}

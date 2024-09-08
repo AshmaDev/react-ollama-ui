@@ -1,18 +1,27 @@
-export type ChatRequest = {
-  model: string;
-  messages?: ChatMessage[];
+export type TChat = {
+  id: string;
+  title: string;
+  messages: TChatMessage[];
 };
 
-export type ChatMessage = {
+export type TChatListItem = Omit<TChat, "messages">;
+export type TChatList = TChatListItem[];
+
+export type TChatRequest = {
+  model: string;
+  messages?: TChatMessage[];
+};
+
+export type TChatMessage = {
   role: string;
   content: string;
   type?: string;
 };
 
-export type ChatCompletedResponse = {
+export type TChatCompletedResponse = {
   model: string;
   created_at: string;
-  message: ChatMessage;
+  message: TChatMessage;
   done: boolean;
   total_duration: number;
   load_duration: number;
@@ -22,21 +31,21 @@ export type ChatCompletedResponse = {
   eval_duration: number;
 };
 
-export type ChatPartResponse = {
+export type TChatPartResponse = {
   model: string;
   created_at: string;
-  message: ChatMessage;
+  message: TChatMessage;
   done: boolean;
 };
 
-export type Model = {
+export type TModel = {
   name: string;
   modified_at: string;
   size: number;
 };
 
-export type ListLocalModelsResponse = {
-  models: Model[];
+export type TListLocalModelsResponse = {
+  models: TModel[];
 };
 
-export type ChatResponse = ChatCompletedResponse | ChatPartResponse;
+export type TChatResponse = TChatCompletedResponse | TChatPartResponse;

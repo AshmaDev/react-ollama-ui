@@ -1,9 +1,9 @@
 import {
-  ChatPartResponse,
-  ChatRequest,
-  ChatResponse,
-  ListLocalModelsResponse,
-} from "../types/api.types";
+  TChatPartResponse,
+  TChatRequest,
+  TChatResponse,
+  TListLocalModelsResponse,
+} from "@/types/api.types";
 import { getSettingByKey } from "./settings";
 
 export const DEFAULT_API_URL = "http://localhost:11434/api";
@@ -11,26 +11,19 @@ export const DEFAULT_API_URL = "http://localhost:11434/api";
 const getApiUrl = async (path: string): Promise<string> => {
   let apiUrl = DEFAULT_API_URL;
 
-  try {
-    const setting = await getSettingByKey("apiUrl");
+  const setting = await getSettingByKey("apiUrl");
 
-    if (setting) {
-      apiUrl = setting;
-    }
-  } catch (error) {
-    console.warn(
-      "Failed to retrieve API URL from settings, using default:",
-      error
-    );
+  if (setting) {
+    apiUrl = setting;
   }
 
   return `${apiUrl}${path}`;
 };
 
 export const generateChat = async (
-  request: ChatRequest,
-  onDataReceived: (data: ChatPartResponse) => void
-): Promise<ChatResponse[]> => {
+  request: TChatRequest,
+  onDataReceived: (data: TChatPartResponse) => void
+): Promise<TChatResponse[]> => {
   const apiUrl = await getApiUrl("/chat");
 
   const res = await fetch(apiUrl, {
@@ -46,7 +39,7 @@ export const generateChat = async (
   }
 
   const reader = res.body?.getReader();
-  let results: ChatResponse[] = [];
+  let results: TChatResponse[] = [];
   let buffer = "";
 
   if (reader) {
@@ -65,33 +58,25 @@ export const generateChat = async (
 
         for (let chunk of completeChunks) {
           if (chunk.trim()) {
-            try {
-              const parsedChunk: ChatPartResponse = JSON.parse(chunk);
-              onDataReceived(parsedChunk);
-              results.push(parsedChunk);
-            } catch (e) {
-              console.error("Failed to parse chunk:", e, chunk);
-            }
+            const parsedChunk: TChatPartResponse = JSON.parse(chunk);
+            onDataReceived(parsedChunk);
+            results.push(parsedChunk);
           }
         }
       }
     }
 
     if (buffer.trim()) {
-      try {
-        const parsedChunk: ChatPartResponse = JSON.parse(buffer);
-        onDataReceived(parsedChunk);
-        results.push(parsedChunk);
-      } catch (e) {
-        console.error("Failed to parse final buffer:", e, buffer);
-      }
+      const parsedChunk: TChatPartResponse = JSON.parse(buffer);
+      onDataReceived(parsedChunk);
+      results.push(parsedChunk);
     }
   }
 
   return results;
 };
 
-export const listLocalModels = async (): Promise<ListLocalModelsResponse> => {
+export const listLocalModels = async (): Promise<TListLocalModelsResponse> => {
   const apiUrl = await getApiUrl("/tags");
 
   const response = await fetch(apiUrl, {
@@ -100,5 +85,6 @@ export const listLocalModels = async (): Promise<ListLocalModelsResponse> => {
       "Content-Type": "application/json",
     },
   });
+
   return await response.json();
 };

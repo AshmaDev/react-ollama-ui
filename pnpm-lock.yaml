@@ -32,6 +32,9 @@ importers:
       react-syntax-highlighter:
         specifier: ^15.5.0
         version: 15.5.0(react@18.3.1)
+      swr:
+        specifier: ^2.2.5
+        version: 2.2.5(react@18.3.1)
       uuid:
         specifier: ^10.0.0
         version: 10.0.0
@@ -42,6 +45,9 @@ importers:
       '@tailwindcss/typography':
         specifier: ^0.5.15
         version: 0.5.15(tailwindcss@3.4.10)
+      '@types/node':
+        specifier: ^22.5.3
+        version: 22.5.3
       '@types/react':
         specifier: ^18.3.3
         version: 18.3.5
@@ -56,7 +62,7 @@ importers:
         version: 10.0.0
       '@vitejs/plugin-react':
         specifier: ^4.3.1
-        version: 4.3.1(vite@5.4.2)
+        version: 4.3.1(vite@5.4.2(@types/node@22.5.3))
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.44)
@@ -86,7 +92,7 @@ importers:
         version: 8.4.0(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)
       vite:
         specifier: ^5.4.1
-        version: 5.4.2
+        version: 5.4.2(@types/node@22.5.3)
 
 packages:
 
@@ -528,6 +534,9 @@ packages:
   '@types/ms@0.7.34':
     resolution: {integrity: sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==}
 
+  '@types/node@22.5.3':
+    resolution: {integrity: sha512-njripolh85IA9SQGTAqbmnNZTdxv7X/4OYGPz8tgy5JDr8MP+uDBa921GpYEoDDnwm0Hmn5ZPeJgiiSTPoOzkQ==}
+
   '@types/prop-types@15.7.12':
     resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
 
@@ -742,6 +751,9 @@ packages:
 
   classnames@2.5.1:
     resolution: {integrity: sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==}
+
+  client-only@0.0.1:
+    resolution: {integrity: sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==}
 
   color-convert@1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
@@ -1592,6 +1604,11 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
+  swr@2.2.5:
+    resolution: {integrity: sha512-QtxqyclFeAsxEUeZIYmsaQ0UjimSq1RZ9Un7I68/0ClKK/U3LoyQunwkQfJZr2fc22DfIXLNDc2wFyTEikCUpg==}
+    peerDependencies:
+      react: ^16.11.0 || ^17.0.0 || ^18.0.0
+
   tailwindcss@3.4.10:
     resolution: {integrity: sha512-KWZkVPm7yJRhdu4SRSl9d4AK2wM3a50UsvgHZO7xY77NQr2V+fIrEuoDGQcbvswWvFGbS2f6e+jC/6WJm1Dl0w==}
     engines: {node: '>=14.0.0'}
@@ -1648,6 +1665,9 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  undici-types@6.19.8:
+    resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
+
   unified@11.0.5:
     resolution: {integrity: sha512-xKvGhPWw3k84Qjh8bI3ZeJjqnyadK+GEFtazSfZv/rKeTkTjOJho6mFqh2SM96iIcZokxiOpg78GazTSg8+KHA==}
 
@@ -1674,6 +1694,11 @@ packages:
 
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
+
+  use-sync-external-store@1.2.2:
+    resolution: {integrity: sha512-PElTlVMwpblvbNqQ82d2n6RjStvdSoNe9FG28kNfz3WiXilJm4DdNkEzRhCZuIDwY8U08WVihhGR5iRqAwfDiw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
@@ -2147,6 +2172,10 @@ snapshots:
 
   '@types/ms@0.7.34': {}
 
+  '@types/node@22.5.3':
+    dependencies:
+      undici-types: 6.19.8
+
   '@types/prop-types@15.7.12': {}
 
   '@types/react-dom@18.3.0':
@@ -2251,14 +2280,14 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@vitejs/plugin-react@4.3.1(vite@5.4.2)':
+  '@vitejs/plugin-react@4.3.1(vite@5.4.2(@types/node@22.5.3))':
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-transform-react-jsx-self': 7.24.7(@babel/core@7.25.2)
       '@babel/plugin-transform-react-jsx-source': 7.24.7(@babel/core@7.25.2)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.4.2
+      vite: 5.4.2(@types/node@22.5.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -2382,6 +2411,8 @@ snapshots:
       fsevents: 2.3.3
 
   classnames@2.5.1: {}
+
+  client-only@0.0.1: {}
 
   color-convert@1.9.3:
     dependencies:
@@ -3381,6 +3412,12 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
+  swr@2.2.5(react@18.3.1):
+    dependencies:
+      client-only: 0.0.1
+      react: 18.3.1
+      use-sync-external-store: 1.2.2(react@18.3.1)
+
   tailwindcss@3.4.10:
     dependencies:
       '@alloc/quick-lru': 5.2.0
@@ -3451,6 +3488,8 @@ snapshots:
 
   typescript@5.5.4: {}
 
+  undici-types@6.19.8: {}
+
   unified@11.0.5:
     dependencies:
       '@types/unist': 3.0.3
@@ -3494,6 +3533,10 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
+  use-sync-external-store@1.2.2(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+
   util-deprecate@1.0.2: {}
 
   uuid@10.0.0: {}
@@ -3508,12 +3551,13 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
 
-  vite@5.4.2:
+  vite@5.4.2(@types/node@22.5.3):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.44
       rollup: 4.21.2
     optionalDependencies:
+      '@types/node': 22.5.3
       fsevents: 2.3.3
 
   which@2.0.2:

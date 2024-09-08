@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useChat } from "../../contexts/ChatContext";
+import { useChat } from "@/contexts/ChatContext";
 import Input from "../common/Input";
 
 const ChatHeader = () => {
-  const { title, setTitle, changeChatTitle } = useChat();
-  const [isEditing, setIsEditing] = useState(false);
+  const { currentChat, setTitle, changeChatTitle } = useChat();
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const handleTitleClick = () => {
     setIsEditing(true);
@@ -20,13 +20,13 @@ const ChatHeader = () => {
       {isEditing ? (
         <Input
           autoFocus
-          value={title}
+          value={currentChat.title}
           onChange={setTitle}
           onBlur={saveTitle}
           className="border border-zinc-300 p-2 rounded"
         />
       ) : (
-        <span onClick={handleTitleClick}>{title}</span>
+        <span onClick={handleTitleClick}>{currentChat.title}</span>
       )}
     </div>
   );

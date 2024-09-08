@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { Plus, Sliders } from "@phosphor-icons/react";
-import { useSettings } from "../../contexts/SettingsContext";
+import { useUI } from "@/contexts/UIContext";
 import Button from "../common/Button";
 import ChatList from "./ChatList";
 
 const Sidebar = () => {
-  const { setIsSettingsOpen } = useSettings();
+  const { setIsSettingsOpen } = useUI();
   const navigate = useNavigate();
 
   const handleNewChat = () => {

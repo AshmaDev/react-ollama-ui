@@ -1,48 +1,34 @@
-import { useEffect, useState } from "react";
-import { useSettings } from "../../contexts/SettingsContext";
-import { listLocalModels } from "../../services/api";
+import useSWR from "swr";
+import { useSettings } from "@/contexts/SettingsContext";
+import { listLocalModels } from "@/services/api";
 import Select from "../common/Select";
+
+const fetcher = async () => {
+  const response = await listLocalModels();
+  return response.models;
+};
 
 const ModelSelector = () => {
   const { model, setModel } = useSettings();
 
-  const [models, setModels] = useState<
-    { name: string; modified_at: string; size: number }[]
-  >([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: models, error } = useSWR("localModels", fetcher);
 
-  useEffect(() => {
-    const fetchModels = async () => {
-      try {
-        const response = await listLocalModels();
-        setModels(response.models);
-        setLoading(false);
-      } catch (err) {
-        setError("Failed to fetch models");
-        setLoading(false);
-      }
-    };
+  if (error) {
+    return <p className="text-red-500">Failed to fetch models</p>;
+  }
 
-    fetchModels();
-  }, []);
+  if (!models) {
+    return <p>Loading models...</p>;
+  }
 
   return (
-    <div>
-      {loading ? (
-        <p>Loading models...</p>
-      ) : error ? (
-        <p className="text-red-500">{error}</p>
-      ) : (
-        <Select
-          value={model}
-          options={models.map((m) => m.name)}
-          onChange={(value) => setModel(value)}
-          placeholder="Select a model"
-          optionRenderer={(name) => name}
-        />
-      )}
-    </div>
+    <Select
+      value={model}
+      options={models.map((m) => m.name)}
+      onChange={(value) => setModel(value)}
+      placeholder="Select a model"
+      optionRenderer={(name) => name}
+    />
   );
 };
 

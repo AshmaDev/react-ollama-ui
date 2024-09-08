@@ -6,6 +6,8 @@ React Ollama UI is a web interface for [ollama.ai](https://ollama.ai/download), 
   <img src=".github/preview.png" alt="React Ollama UI preview">
 </p>
 
+Check out [live preview:](https://react-ollama-ui.vercel.app/)!
+
 ## ⚙️ Installation
 
 ### Prerequisites

@@ -7,6 +7,7 @@ import {
   TPullModelResponse,
 } from "@/types/api.types";
 import { getSettingByKey } from "./settings";
+import { handleStream } from "@/utils/handleStream";
 
 export const DEFAULT_API_URL = "http://localhost:11434/api";
 
@@ -28,7 +29,7 @@ export const generateChat = async (
 ): Promise<TChatResponse[]> => {
   const apiUrl = await getApiUrl("/chat");
 
-  const res = await fetch(apiUrl, {
+  const response = await fetch(apiUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -36,44 +37,16 @@ export const generateChat = async (
     body: JSON.stringify(request),
   });
 
-  if (!res.ok) {
+  if (!response.ok) {
     throw new Error("Network response was not ok");
   }
 
-  const reader = res.body?.getReader();
   const results: TChatResponse[] = [];
-  let buffer = "";
 
-  if (reader) {
-    const decoder = new TextDecoder();
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      buffer += decoder.decode(value, { stream: true });
-
-      const boundary = buffer.lastIndexOf("\n");
-      if (boundary !== -1) {
-        const completeChunks = buffer.slice(0, boundary).split("\n");
-        buffer = buffer.slice(boundary + 1);
-
-        for (const chunk of completeChunks) {
-          if (chunk.trim()) {
-            const parsedChunk: TChatPartResponse = JSON.parse(chunk);
-            onDataReceived(parsedChunk);
-            results.push(parsedChunk);
-          }
-        }
-      }
-    }
-
-    if (buffer.trim()) {
-      const parsedChunk: TChatPartResponse = JSON.parse(buffer);
-      onDataReceived(parsedChunk);
-      results.push(parsedChunk);
-    }
-  }
+  await handleStream<TChatPartResponse>(response, (data) => {
+    onDataReceived(data);
+    results.push(data);
+  });
 
   return results;
 };
@@ -93,8 +66,8 @@ export const listLocalModels = async (): Promise<TListLocalModelsResponse> => {
 
 export const pullModel = async (
   request: TPullModelRequest,
-  onDataReceived: (data: TPullModelResponse) => void
-): Promise<{ error?: string }> => {
+  onDataReceived: (data: TPullModelResponse & { error?: string }) => void
+): Promise<void> => {
   const apiUrl = await getApiUrl("/pull");
 
   const response = await fetch(apiUrl, {
@@ -105,21 +78,14 @@ export const pullModel = async (
     body: JSON.stringify(request),
   });
 
-  const reader = response.body?.getReader();
-  const decoder = new TextDecoder("utf-8");
-  let done = false;
-  let result;
-
-  while (!done) {
-    const { value, done: doneReading } = (await reader?.read()) ?? {};
-    done = !!doneReading;
-
-    if (value) {
-      const chunk = decoder.decode(value, { stream: true });
-      onDataReceived(JSON.parse(chunk));
-      result = JSON.parse(chunk);
-    }
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
   }
 
-  return result;
+  await handleStream<TPullModelResponse & { error?: string }>(
+    response,
+    (data) => {
+      onDataReceived(data);
+    }
+  );
 };

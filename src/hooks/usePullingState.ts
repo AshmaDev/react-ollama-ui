@@ -29,14 +29,10 @@ export const usePullingState = (
   const pullNewModel = useCallback(
     async (modelName: string) => {
       setPullingState((prevState) => ({ ...prevState, model: modelName }));
+      const timer = setTimeout(() => setIsPullPopupOpen(false), ERROR_TIMEOUT);
 
       try {
-        const timer = setTimeout(
-          () => setIsPullPopupOpen(false),
-          ERROR_TIMEOUT
-        );
-
-        const response = await pullModel({ name: modelName }, (data) => {
+        await pullModel({ name: modelName }, (data) => {
           if (data.total > 0 && data.total === data.completed) {
             setPullingState(DEFAULT_PULLING_STATE);
             onComplete();
@@ -50,15 +46,14 @@ export const usePullingState = (
             }));
           }
         });
+      } catch (error: unknown) {
+        clearTimeout(timer);
 
-        if (response.error) {
-          clearTimeout(timer);
-          setPullingState((prevState) => ({
-            ...prevState,
-            error: response.error,
-          }));
-        }
-      } catch (error) {
+        setPullingState((prevState) => ({
+          ...prevState,
+          error: String(error),
+        }));
+
         if (debugMode) console.error("Error pulling model:", error);
       }
     },

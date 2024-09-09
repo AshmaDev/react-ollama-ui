@@ -31,7 +31,7 @@ export const SettingsProvider = ({ children }: SettingsProviderProps) => {
   const { pullingState, pullNewModel, clearPullingState } = usePullingState(
     setIsPullPopupOpen,
     settings?.debugMode ?? false,
-    refetchModelList
+    () => refetchModelList()
   );
 
   const setModel = useCallback(

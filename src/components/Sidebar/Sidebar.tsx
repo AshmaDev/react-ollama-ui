@@ -1,12 +1,13 @@
+import cn from "classnames";
 import { useNavigate } from "react-router-dom";
-import { Plus, Sliders } from "@phosphor-icons/react";
+import { ArrowLineLeft, Plus, Sliders } from "@phosphor-icons/react";
 import { useUI } from "@/contexts/UIContext";
+import PullingStatus from "../Settings/PullModel/PullingStatus";
 import Button from "../common/Button";
 import ChatList from "./ChatList";
-import PullingStatus from "../Settings/PullModel/PullingStatus";
 
 const Sidebar = () => {
-  const { setIsSettingsOpen } = useUI();
+  const { isSidebarOpen, setIsSettingsOpen, setIsSidebarOpen } = useUI();
   const navigate = useNavigate();
 
   const handleNewChat = () => {
@@ -17,9 +18,22 @@ const Sidebar = () => {
     setIsSettingsOpen((prev) => !prev);
   };
 
+  const handleClose = () => {
+    setIsSidebarOpen(false);
+  };
+
   return (
-    <div className="w-64 bg-white text-neutral-800 flex flex-col border-r border-neutral-200">
+    <div
+      className={cn(
+        "fixed md:relative z-10 left-0 w-64 h-screen flex flex-col border-r border-neutral-200 bg-white text-neutral-800 ",
+        { "hidden md:flex": !isSidebarOpen }
+      )}
+    >
       <div className="p-4">
+        <button className="text-neutral-600 mb-4 md:hidden" onClick={handleClose}>
+          <ArrowLineLeft size={24} />
+        </button>
+
         <div className="border-b border-neutral-100 pb-4">
           <Button
             block
@@ -32,10 +46,10 @@ const Sidebar = () => {
       </div>
 
       <ChatList />
-      
+
       <PullingStatus />
 
-      <div className="p-4">
+      <div className="px-4 mb-4 hidden md:block">
         <div className="border-t border-neutral-100 pt-2 space-y-2">
           <Button
             block

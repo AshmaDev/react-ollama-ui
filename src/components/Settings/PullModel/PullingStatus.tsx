@@ -13,7 +13,7 @@ const PullingStatus = () => {
   }
 
   return (
-    <div className="px-4">
+    <div className="p-4">
       <div className="flex flex-col items-center border rounded-xl p-3 border-neutral-200 bg-white">
         <h3 className="font-semibold text-center text-balance text-sm">
           Pulling {pullingState.model}

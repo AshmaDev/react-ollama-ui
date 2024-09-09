@@ -20,7 +20,7 @@ const Popup = ({ isOpen, onClose, children }: PopupProps) => {
         "bg-black bg-opacity-50": isOpen,
       })}
     >
-      <div className="bg-white p-4 rounded-xl border border-neutral-200 relative w-full max-w-lg">
+      <div className="bg-white p-4 rounded-xl border border-neutral-200 relative w-full max-w-lg mx-4">
         <button
           className="absolute top-4 right-4 text-neutral-200 hover:text-neutral-400"
           aria-label="Close"

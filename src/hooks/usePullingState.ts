@@ -62,7 +62,7 @@ export const usePullingState = (
         if (debugMode) console.error("Error pulling model:", error);
       }
     },
-    [setIsPullPopupOpen, debugMode]
+    [setIsPullPopupOpen, onComplete, debugMode]
   );
 
   const clearPullingState = () => {

@@ -92,8 +92,9 @@ export const listLocalModels = async (): Promise<TListLocalModelsResponse> => {
 };
 
 export const pullModel = async (
-  request: TPullModelRequest
-): Promise<TPullModelResponse> => {
+  request: TPullModelRequest,
+  onDataReceived: (data: TPullModelResponse) => void
+): Promise<{ error?: string }> => {
   const apiUrl = await getApiUrl("/pull");
 
   const response = await fetch(apiUrl, {
@@ -104,5 +105,21 @@ export const pullModel = async (
     body: JSON.stringify(request),
   });
 
-  return await response.json();
+  const reader = response.body?.getReader();
+  const decoder = new TextDecoder("utf-8");
+  let done = false;
+  let result;
+
+  while (!done) {
+    const { value, done: doneReading } = (await reader?.read()) ?? {};
+    done = !!doneReading;
+
+    if (value) {
+      const chunk = decoder.decode(value, { stream: true });
+      onDataReceived(JSON.parse(chunk));
+      result = JSON.parse(chunk);
+    }
+  }
+
+  return result;
 };

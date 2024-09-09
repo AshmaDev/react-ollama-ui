@@ -59,4 +59,5 @@ export type TPullModelResponse = {
   status: string;
   digest: string;
   total: number;
+  completed: number;
 } 

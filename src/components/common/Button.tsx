@@ -27,7 +27,7 @@ const Button = ({
         "flex items-center gap-2 px-4 rounded-xl transition-colors duration-200 bg-white hover:bg-neutral-50 text-neutral-600",
         className,
         {
-          "opacity-75": disabled,
+          "opacity-50 cursor-not-allowed": disabled,
           "w-full p-3": block,
           "py-2": !block,
         }

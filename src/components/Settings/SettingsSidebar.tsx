@@ -4,10 +4,12 @@ import { useUI } from "@/contexts/UIContext";
 import Input from "../common/Input";
 import Toggle from "../common/Toggle";
 import ModelSelector from "./ModelSelector";
+import Button from "../common/Button";
 
 const SettingsSidebar = () => {
-  const { setIsSettingsOpen } = useUI();
-  const { apiUrl, debugMode, setApiUrl, setDebugMode } = useSettings();
+  const { setIsSettingsOpen, setIsPullPopupOpen } = useUI();
+  const { apiUrl, debugMode, pullingState, setApiUrl, setDebugMode } =
+    useSettings();
 
   const handleClose = () => {
     setIsSettingsOpen(false);
@@ -27,6 +29,22 @@ const SettingsSidebar = () => {
         <p className="block text-sm font-medium mb-2">Select Model</p>
 
         <ModelSelector />
+      </div>
+
+      <div className="mb-4">
+        <p className="block text-sm font-medium mb-2">Add New Model</p>
+
+        <Button
+          block
+          label={
+            pullingState.model
+              ? `Pulling in progress...`
+              : "Pull Model"
+          }
+          disabled={!!pullingState.model}
+          className="border border-neutral-200 justify-center"
+          onClick={() => setIsPullPopupOpen(true)}
+        />
       </div>
 
       <div className="mb-4">

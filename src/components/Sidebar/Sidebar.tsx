@@ -3,6 +3,7 @@ import { Plus, Sliders } from "@phosphor-icons/react";
 import { useUI } from "@/contexts/UIContext";
 import Button from "../common/Button";
 import ChatList from "./ChatList";
+import PullingStatus from "../Settings/PullModel/PullingStatus";
 
 const Sidebar = () => {
   const { setIsSettingsOpen } = useUI();
@@ -31,6 +32,8 @@ const Sidebar = () => {
       </div>
 
       <ChatList />
+      
+      <PullingStatus />
 
       <div className="p-4">
         <div className="border-t border-neutral-100 pt-2 space-y-2">

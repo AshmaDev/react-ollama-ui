@@ -14,21 +14,23 @@ const PullingStatus = () => {
 
   return (
     <div className="px-4">
-      <div className="flex flex-col items-center border rounded-xl p-4 border-neutral-200 bg-white">
-        <h3 className="font-semibold text-center text-balance">
-          Pulling {pullingState.model}...
+      <div className="flex flex-col items-center border rounded-xl p-3 border-neutral-200 bg-white">
+        <h3 className="font-semibold text-center text-balance text-sm">
+          Pulling {pullingState.model}
         </h3>
-        <p className="mb-2 text-sm">It may take a few minutes</p>
+        <p className="mb-2 text-xs">It may take a few minutes</p>
 
-        <ProgressBar
-          progress={
-            (pullingState.status.completed / pullingState.status.total) * 100
-          }
-        />
+        <div className="relative w-full">
+          <ProgressBar
+            progress={
+              (pullingState.status.completed / pullingState.status.total) * 100
+            }
+          />
 
-        <div className="w-full flex justify-between text-xs mt-1 text-neutral-400">
-          <span>{formatBytesToGB(pullingState.status.completed)}</span>
-          <span>{formatBytesToGB(pullingState.status.total)}</span>
+          <div className="absolute top-0 w-full flex justify-center gap-1 text-xs text-neutral-600">
+            <span>{formatBytesToGB(pullingState.status.completed)}</span> /
+            <span>{formatBytesToGB(pullingState.status.total)}</span>
+          </div>
         </div>
       </div>
     </div>

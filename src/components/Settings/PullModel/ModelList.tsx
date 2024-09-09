@@ -15,7 +15,7 @@ const ModelList = ({ onPull }: ModelListProps) => {
 
       <div className="max-h-96 overflow-auto px-4">
         {modelList.map((model) => {
-          const isPulled = !!localModelList.find(
+          const isPulled = !!localModelList?.find(
             (m) => m.name.split(":")[0] === model.name
           );
 

@@ -19,7 +19,8 @@ const ERROR_TIMEOUT = 2000;
 
 export const usePullingState = (
   setIsPullPopupOpen: (open: boolean) => void,
-  debugMode: boolean
+  debugMode: boolean,
+  onComplete: () => void
 ) => {
   const [pullingState, setPullingState] = useState<PullingState>(
     DEFAULT_PULLING_STATE
@@ -36,10 +37,18 @@ export const usePullingState = (
         );
 
         const response = await pullModel({ name: modelName }, (data) => {
-          setPullingState((prevState) => ({
-            ...prevState,
-            status: { total: data.total ?? 0, completed: data.completed ?? 0 },
-          }));
+          if (data.total > 0 && data.total === data.completed) {
+            setPullingState(DEFAULT_PULLING_STATE);
+            onComplete();
+          } else {
+            setPullingState((prevState) => ({
+              ...prevState,
+              status: {
+                total: data.total ?? 0,
+                completed: data.completed ?? 0,
+              },
+            }));
+          }
         });
 
         if (response.error) {

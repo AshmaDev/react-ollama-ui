@@ -27,10 +27,11 @@ const SettingsContext = createContext<SettingsContextProps | undefined>(
 export const SettingsProvider = ({ children }: SettingsProviderProps) => {
   const { setIsPullPopupOpen } = useUI();
   const { settings, updateSettings } = useSettingsState();
-  const { modelList, modelListError } = useModelList();
+  const { modelList, modelListError, refetchModelList } = useModelList();
   const { pullingState, pullNewModel, clearPullingState } = usePullingState(
     setIsPullPopupOpen,
-    settings?.debugMode ?? false
+    settings?.debugMode ?? false,
+    refetchModelList
   );
 
   const setModel = useCallback(

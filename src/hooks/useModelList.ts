@@ -7,10 +7,11 @@ const fetchLocalModels = async () => {
 };
 
 export const useModelList = () => {
-  const { data: modelList, error: modelListError } = useSWR(
-    "localModels",
-    fetchLocalModels
-  );
-  
-  return { modelList, modelListError };
+  const {
+    data: modelList,
+    error: modelListError,
+    mutate: refetchModelList,
+  } = useSWR("localModels", fetchLocalModels);
+
+  return { modelList, modelListError, refetchModelList };
 };

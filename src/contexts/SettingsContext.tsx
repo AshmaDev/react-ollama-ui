@@ -1,80 +1,78 @@
-import useSWR from "swr";
-import React, { createContext, useContext, useMemo, useCallback } from "react";
-import { getAllSettings, saveSettings } from "@/services/settings";
-import { DEFAULT_API_URL } from "@/services/api";
-
-interface SettingsState {
-  model?: string;
-  apiUrl?: string;
-  debugMode?: boolean;
-}
+import React, { createContext, useCallback, useContext, useMemo } from "react";
+import { SettingsState, useSettingsState } from "@/hooks/useSettingsState";
+import { PullingState, usePullingState } from "@/hooks/usePullingState";
+import { useModelList } from "@/hooks/useModelList";
+import { TModel } from "@/types/api.types";
+import { useUI } from "./UIContext";
 
 interface SettingsContextProps extends SettingsState {
+  pullingState: PullingState;
+  modelList?: TModel[];
+  modelListError: string;
   setModel: (model: string) => void;
   setApiUrl: (apiUrl: string) => void;
   setDebugMode: (debugMode: boolean) => void;
+  pullModel: (model: string) => void;
+  clearPullingState: () => void;
 }
 
 interface SettingsProviderProps {
   children: React.ReactNode;
 }
 
-const DEFAULT_SETTINGS = {
-  model: "",
-  apiUrl: DEFAULT_API_URL,
-  debugMode: false,
-};
-
-const fetchSettings = async () => {
-  const settings = await getAllSettings();
-
-  return settings;
-};
-
 const SettingsContext = createContext<SettingsContextProps | undefined>(
   undefined
 );
 
 export const SettingsProvider = ({ children }: SettingsProviderProps) => {
-  const { data: settings, mutate } = useSWR<SettingsState>(
-    "settings",
-    fetchSettings,
-    { revalidateOnFocus: false }
+  const { setIsPullPopupOpen } = useUI();
+  const { settings, updateSettings } = useSettingsState();
+  const { modelList, modelListError, refetchModelList } = useModelList();
+  const { pullingState, pullNewModel, clearPullingState } = usePullingState(
+    setIsPullPopupOpen,
+    settings?.debugMode ?? false,
+    () => refetchModelList()
   );
 
-  const updateSettings = useCallback(
-    (newSettings: Partial<SettingsState>) => {
-      if (!settings) return;
-
-      mutate(
-        async (currentSettings) => {
-          try {
-            const updatedSettings = { ...currentSettings, ...newSettings };
-            await saveSettings(updatedSettings);
-
-            return updatedSettings;
-          } catch (err) {
-            if (settings.debugMode) console.error("Error saving settings", err);
-          }
-        },
-        {
-          optimisticData: { ...settings, ...newSettings },
-          rollbackOnError: true,
-        }
-      );
-    },
-    [settings, mutate]
+  const setModel = useCallback(
+    (model: string) => updateSettings({ model }),
+    [updateSettings]
   );
 
-  const value = useMemo(() => {
-    return {
-      ...DEFAULT_SETTINGS,
+  const setApiUrl = useCallback(
+    (apiUrl: string) => updateSettings({ apiUrl }),
+    [updateSettings]
+  );
+
+  const setDebugMode = useCallback(
+    (debugMode: boolean) => updateSettings({ debugMode }),
+    [updateSettings]
+  );
+
+  const value = useMemo(
+    () => ({
       ...settings,
-      setModel: (model: string) => updateSettings({ model }),
-      setApiUrl: (apiUrl: string) => updateSettings({ apiUrl }),
-      setDebugMode: (debugMode: boolean) => updateSettings({ debugMode }),
-    };
-  }, [settings, updateSettings]);
+      modelList,
+      modelListError,
+      pullingState,
+      setModel,
+      setApiUrl,
+      setDebugMode,
+      pullModel: pullNewModel,
+      clearPullingState,
+    }),
+    [
+      settings,
+      modelList,
+      modelListError,
+      pullingState,
+      setModel,
+      setApiUrl,
+      setDebugMode,
+      pullNewModel,
+      clearPullingState,
+    ]
+  );
 
   return (
     <SettingsContext.Provider value={value}>
@@ -86,9 +84,8 @@ export const SettingsProvider = ({ children }: SettingsProviderProps) => {
 export const useSettings = () => {
   const context = useContext(SettingsContext);
 
-  if (!context) {
+  if (!context)
     throw new Error("useSettings must be used within a SettingsProvider");
-  }
 
   return context;
 };

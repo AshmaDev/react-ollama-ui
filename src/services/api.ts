@@ -3,8 +3,11 @@ import {
   TChatRequest,
   TChatResponse,
   TListLocalModelsResponse,
+  TPullModelRequest,
+  TPullModelResponse,
 } from "@/types/api.types";
 import { getSettingByKey } from "./settings";
+import { handleStream } from "@/utils/handleStream";
 
 export const DEFAULT_API_URL = "http://localhost:11434/api";
 
@@ -26,7 +29,7 @@ export const generateChat = async (
 ): Promise<TChatResponse[]> => {
   const apiUrl = await getApiUrl("/chat");
 
-  const res = await fetch(apiUrl, {
+  const response = await fetch(apiUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -34,44 +37,16 @@ export const generateChat = async (
     body: JSON.stringify(request),
   });
 
-  if (!res.ok) {
+  if (!response.ok) {
     throw new Error("Network response was not ok");
   }
 
-  const reader = res.body?.getReader();
-  let results: TChatResponse[] = [];
-  let buffer = "";
+  const results: TChatResponse[] = [];
 
-  if (reader) {
-    const decoder = new TextDecoder();
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      buffer += decoder.decode(value, { stream: true });
-
-      let boundary = buffer.lastIndexOf("\n");
-      if (boundary !== -1) {
-        const completeChunks = buffer.slice(0, boundary).split("\n");
-        buffer = buffer.slice(boundary + 1);
-
-        for (let chunk of completeChunks) {
-          if (chunk.trim()) {
-            const parsedChunk: TChatPartResponse = JSON.parse(chunk);
-            onDataReceived(parsedChunk);
-            results.push(parsedChunk);
-          }
-        }
-      }
-    }
-
-    if (buffer.trim()) {
-      const parsedChunk: TChatPartResponse = JSON.parse(buffer);
-      onDataReceived(parsedChunk);
-      results.push(parsedChunk);
-    }
-  }
+  await handleStream<TChatPartResponse>(response, (data) => {
+    onDataReceived(data);
+    results.push(data);
+  });
 
   return results;
 };
@@ -87,4 +62,30 @@ export const listLocalModels = async (): Promise<TListLocalModelsResponse> => {
   });
 
   return await response.json();
+};
+
+export const pullModel = async (
+  request: TPullModelRequest,
+  onDataReceived: (data: TPullModelResponse & { error?: string }) => void
+): Promise<void> => {
+  const apiUrl = await getApiUrl("/pull");
+
+  const response = await fetch(apiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(request),
+  });
+
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+
+  await handleStream<TPullModelResponse & { error?: string }>(
+    response,
+    (data) => {
+      onDataReceived(data);
+    }
+  );
 };

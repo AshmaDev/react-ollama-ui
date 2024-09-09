@@ -2,9 +2,13 @@ import React, { createContext, useContext, useState } from "react";
 
 interface UIContextProps {
   error: string;
+  isSidebarOpen: boolean;
   isSettingsOpen: boolean;
+  isPullPopupOpen: boolean;
   setError: React.Dispatch<React.SetStateAction<string>>;
+  setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsPullPopupOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface UIProviderProps {
@@ -14,14 +18,20 @@ interface UIProviderProps {
 const UIContext = createContext<UIContextProps | undefined>(undefined);
 
 export const UIProvider = ({ children }: UIProviderProps) => {
+  const [isPullPopupOpen, setIsPullPopupOpen] = useState<boolean>(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
   const value = {
     error,
+    isSidebarOpen,
     isSettingsOpen,
-    setIsSettingsOpen,
+    isPullPopupOpen,
     setError,
+    setIsSidebarOpen,
+    setIsSettingsOpen,
+    setIsPullPopupOpen,
   };
 
   return <UIContext.Provider value={value}>{children}</UIContext.Provider>;

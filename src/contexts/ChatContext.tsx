@@ -48,7 +48,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     } catch (error) {
       if (debugMode) console.error("Error updating chat title:", error);
     }
-  }, [chatId, currentChat.title, updateChatListTitle]);
+  }, [chatId, debugMode, currentChat.title, updateChatListTitle]);
 
   const deleteChatById = useCallback(
     async (id: string) => {
@@ -63,7 +63,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
         if (debugMode) console.error("Error deleting chat:", error);
       }
     },
-    [chatId, deleteChatFromList, navigate]
+    [chatId, debugMode, deleteChatFromList, navigate]
   );
 
   const createNewChat = useCallback((): string => {
@@ -74,56 +74,67 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     return id;
   }, [addToChatList, currentChat.title, navigate]);
 
-  const sendMessage = async (message: string) => {
-    if (!model) {
-      setError("Select model!");
-      return;
-    }
+  const sendMessage = useCallback(
+    async (message: string) => {
+      if (!model) {
+        setError("Select model!");
+        return;
+      }
 
-    let currentChatId = chatId;
+      let currentChatId = chatId;
 
-    if (!currentChatId) {
-      currentChatId = createNewChat();
-    }
+      if (!currentChatId) {
+        currentChatId = createNewChat();
+      }
 
-    const userMessage: TChatMessage = { role: "user", content: message };
-    const updatedMessages = [...currentChat.messages!, userMessage];
-    setCurrentChat((prevChat) => ({
-      ...prevChat,
-      messages: updatedMessages,
-    }));
+      const userMessage: TChatMessage = { role: "user", content: message };
+      const updatedMessages = [...currentChat.messages!, userMessage];
+      setCurrentChat((prevChat) => ({
+        ...prevChat,
+        messages: updatedMessages,
+      }));
 
-    const chatRequest: TChatRequest = {
-      model,
-      messages: updatedMessages,
-    };
+      const chatRequest: TChatRequest = {
+        model,
+        messages: updatedMessages,
+      };
 
-    let botMessage: TChatMessage = { role: "bot", content: "" };
-    setCurrentChat((prevChat) => ({
-      ...prevChat,
-      messages: [...updatedMessages, botMessage],
-    }));
+      const botMessage: TChatMessage = { role: "bot", content: "" };
+      setCurrentChat((prevChat) => ({
+        ...prevChat,
+        messages: [...updatedMessages, botMessage],
+      }));
 
-    try {
-      await generateChat(chatRequest, (data) => {
-        botMessage.content += data.message.content;
-        setCurrentChat((prevChat) => {
-          const updatedMessages = [...prevChat.messages!];
-          updatedMessages[updatedMessages.length - 1] = { ...botMessage };
-          return { ...prevChat, messages: updatedMessages };
+      try {
+        await generateChat(chatRequest, (data) => {
+          botMessage.content += data.message.content;
+          setCurrentChat((prevChat) => {
+            const updatedMessages = [...prevChat.messages!];
+            updatedMessages[updatedMessages.length - 1] = { ...botMessage };
+            return { ...prevChat, messages: updatedMessages };
+          });
         });
-      });
 
-      saveChat(currentChatId, currentChat.title, [
-        ...currentChat.messages,
-        userMessage,
-        botMessage,
-      ]);
-    } catch (error) {
-      setError("An error occured while generating response!");
-      if (debugMode) console.error("Error generating chat:", error);
-    }
-  };
+        saveChat(currentChatId, currentChat.title, [
+          ...currentChat.messages,
+          userMessage,
+          botMessage,
+        ]);
+      } catch (error) {
+        setError("An error occured while generating response!");
+        if (debugMode) console.error("Error generating chat:", error);
+      }
+    },
+    [
+      model,
+      chatId,
+      currentChat,
+      createNewChat,
+      setCurrentChat,
+      setError,
+      debugMode,
+    ]
+  );
 
   const value = useMemo(
     () => ({

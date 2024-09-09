@@ -8,7 +8,7 @@ interface AlertProps {
 const Alert = ({ text, onClose }: AlertProps) => {
   return (
     <div className="relative rounded-xl m-4 p-4 text-red-500 border border-red-500">
-      <span className="absolute top-4 right-4" onClick={onClose}>
+      <span className="absolute top-4 right-4 cursor-pointer" onClick={onClose}>
         <X size={20} />
       </span>
 
